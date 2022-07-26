@@ -1,0 +1,5201 @@
+Nonterminals useless in grammar
+
+    primario
+
+
+Rules useless in grammar
+
+  188 primario: literal
+  189         | nombre
+  190         | '(' expresion ')'
+
+
+State 131 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: declaracion $end
+
+    1 declaracion: declaracion_objeto
+    2            | declaracion_tipo
+    3            | declaracion_subprograma
+
+    4 declaracion_objeto: lista_identificadores ':' tipo_escalar ';'
+    5                   | lista_identificadores ':' CONSTANT tipo_escalar ';'
+    6                   | lista_identificadores ':' tipo_escalar asignacion_escalar ';'
+    7                   | lista_identificadores ':' CONSTANT tipo_escalar asignacion_escalar ';'
+    8                   | lista_identificadores ':' tipo_complejo ';'
+    9                   | lista_identificadores ':' CONSTANT tipo_complejo ';'
+   10                   | lista_identificadores ':' tipo_complejo asignacion_complejo ';'
+   11                   | lista_identificadores ':' CONSTANT tipo_complejo asignacion_complejo ';'
+
+   12 lista_identificadores: IDENTIFICADOR
+   13                      | lista_identificadores ',' IDENTIFICADOR
+
+   14 tipo_escalar: INTEGER
+   15             | FLOAT
+   16             | BOOLEAN
+   17             | CHARACTER
+
+   18 asignacion_escalar: ASIG lista_expresion
+
+   19 lista_expresion: expresion
+   20                | lista_expresion ',' expresion
+
+   21 tipo_complejo: nombre_de_tipo
+   22              | tipo_compuesto
+
+   23 nombre_de_tipo: IDENTIFICADOR
+
+   24 tipo_compuesto: tipo_tablero
+   25               | tipo_registro
+   26               | tipo_hashtable
+   27               | tipo_clase
+   28               | tipo_enumeracion
+
+   29 asignacion_complejo: ASIG objeto_complejo
+
+   30 objeto_complejo: '[' lista_objeto_complejo ']'
+   31                | '{' lista_elemento_hastable '}'
+   32                | '(' lista_elemento_registro ')'
+   33                | literal
+
+   34 elemento_hastable: objeto_complejo FLECHA objeto_complejo
+
+   35 elemento_registro: IDENTIFICADOR ASIG objeto_complejo
+
+   36 lista_objeto_complejo: objeto_complejo
+   37                      | lista_objeto_complejo ',' objeto_complejo
+
+   38 lista_elemento_hastable: elemento_hastable
+   39                        | lista_elemento_hastable ',' elemento_hastable
+
+   40 lista_elemento_registro: elemento_registro
+   41                        | lista_elemento_registro ',' elemento_registro
+
+   42 declaracion_tipo: TYPE IDENTIFICADOR IS especificacion_tipo ';'
+
+   43 especificacion_tipo: tipo_escalar
+   44                    | nombre_de_tipo
+   45                    | tipo_compuesto
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS expresion ')' OF especificacion_tipo
+
+   47 tipo_registro: RECORD lista_componente FINISH RECORD
+
+   48 lista_componente: componente
+   49                 | lista_componente componente
+
+   50 componente: lista_identificadores ':' especificacion_tipo ';'
+
+   51 tipo_hashtable: HASHTABLE OF '<' especificacion_tipo ',' especificacion_tipo '>'
+
+   52 tipo_clase: CLASS lista_componente_clase FINISH CLASS
+   53           | CLASS '(' nombre_de_tipo ')' lista_componente_clase FINISH CLASS
+
+   54 lista_componente_clase: componente_clase
+   55                       | lista_componente_clase componente_clase
+
+   56 componente_clase: declaracion_componente
+   57                 | visibilidad declaracion_componente
+
+   58 declaracion_componente: declaracion_objeto
+   59                       | declaracion_tipo
+   60                       | declaracion_metodo
+
+   61 visibilidad: PUBLIC
+   62            | PROTECTED
+   63            | PRIVATE
+
+   64 declaracion_metodo: declaracion_subprograma
+   65                   | lista_modificador declaracion_subprograma
+
+   66 modificador: CONSTRUCTOR
+   67            | DESTRUCTOR
+   68            | ABSTRACT
+   69            | ESPECIFIC
+   70            | FINAL
+
+   71 lista_modificador: modificador
+   72                  | lista_modificador modificador
+
+   73 tipo_enumeracion: ENUMERATION OF tipo_escalar lista_elemento FINISH ENUMERATION
+
+   74 elemento: literal
+   75         | IDENTIFICADOR FLECHA literal
+
+   76 lista_elemento: elemento
+   77               | lista_elemento ',' elemento
+
+   78 declaracion_subprograma: especificacion_subprograma ';'
+   79                        | especificacion_subprograma cuerpo_subprograma ';'
+
+   80 especificacion_subprograma: PROCEDURE IDENTIFICADOR
+   81                           | PROCEDURE IDENTIFICADOR '(' parte_formal ')'
+   82                           | FUNCTION IDENTIFICADOR
+
+   83 $@1: %empty
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal ')' $@1 RETURN especificacion_tipo
+
+   85 parte_formal: %empty
+   86             | declaracion_parametros
+
+   87 declaracion_parametros: declaracion_parametro
+   88                       | declaracion_parametro lista_declaracion_parametro
+
+   89 lista_declaracion_parametro: declaracion_parametro
+   90                            | declaracion_parametro ';' lista_declaracion_parametro
+
+   91 declaracion_parametro: lista_identificadores ':' especificacion_tipo
+   92                      | lista_identificadores ':' modo especificacion_tipo
+
+   93 modo: IN
+   94     | IN OUT
+
+   95 cuerpo_subprograma: IS START lista_instruccion FINISH
+   96                   | IS START lista_instruccion FINISH IDENTIFICADOR
+   97                   | IS lista_declaracion START lista_instruccion FINISH
+   98                   | IS lista_declaracion START lista_instruccion FINISH IDENTIFICADOR
+
+   99 lista_instruccion: instruccion
+  100                  | lista_instruccion instruccion
+
+  101 lista_declaracion: declaracion
+  102                  | lista_declaracion declaracion
+
+  103 instruccion: instruccion_vacia
+  104            | instruccion_asignacion
+  105            | instruccion_exit
+  106            | instruccion_return
+  107            | instruccion_if
+  108            | instruccion_case
+  109            | instruccion_loop
+  110            | instruccion_rise
+  111            | instruccion_try_catch
+  112            | llamada_procedure
+
+  113 instruccion_vacia: NIL ';'
+
+  114 instruccion_asignacion: nombre ASIG expresion ';'
+
+  115 instruccion_return: RETURN expresion ';'
+
+  116 instruccion_exit: EXIT ';'
+  117                 | EXIT IDENTIFICADOR ';'
+  118                 | EXIT WHEN expresion ';'
+  119                 | EXIT IDENTIFICADOR WHEN expresion ';'
+
+  120 instruccion_if: IF expresion THEN lista_instruccion FINISH IF ';'
+  121               | IF expresion THEN lista_instruccion ELSE lista_instruccion FINISH IF ';'
+
+  122 instruccion_case: CASE expresion IS lista_caso_when FINISH CASE ';'
+
+  123 caso_when: WHEN entrada FLECHA lista_instruccion
+  124          | WHEN entrada lista_entrada FLECHA lista_instruccion
+
+  125 lista_caso_when: caso_when
+  126                | lista_caso_when caso_when
+
+  127 entrada: expresion
+  128        | expresion DOS_PTOS expresion
+  129        | OTHERS
+
+  130 lista_entrada: entrada
+  131              | entrada '|' lista_entrada
+
+  132 instruccion_loop: clausula_iteracion bucle_base ';'
+  133                 | IDENTIFICADOR ':' clausula_iteracion bucle_base ';'
+
+  134 clausula_iteracion: FOR IDENTIFICADOR IN expresion DOS_PTOS expresion
+  135                   | FOR IDENTIFICADOR IN REVERSE expresion DOS_PTOS expresion
+  136                   | FOREACH IDENTIFICADOR IN expresion
+  137                   | WHILE expresion
+
+  138 bucle_base: LOOP lista_instruccion FINISH LOOP
+
+  139 instruccion_rise: RAISE IDENTIFICADOR ';'
+
+  140 instruccion_try_catch: TRY lista_instruccion clausulas_excepcion FINISH TRY
+
+  141 clausulas_excepcion: clausula_defecto
+  142                    | lista_clausula_especifica clausula_defecto
+  143                    | lista_clausula_especifica
+
+  144 clausula_especifica: EXCEPTION '(' IDENTIFICADOR ')' lista_instruccion
+
+  145 lista_clausula_especifica: clausula_especifica
+  146                          | lista_clausula_especifica clausula_especifica
+
+  147 clausula_defecto: DEFAULT '(' IDENTIFICADOR ')' lista_instruccion
+
+  148 llamada_procedure: llamada_suprograma ';'
+
+  149 llamada_suprograma: IDENTIFICADOR '(' ')'
+  150                   | IDENTIFICADOR '(' lista_expresion ')'
+
+  151 literal: CTC_CADENA
+  152        | CTC_CARACTER
+  153        | CTC_FLOAT
+  154        | CTC_INT
+  155        | TRUE
+  156        | FALSE
+
+  157 nombre: componente_indexado
+  158       | componente_hash
+  159       | componente_compuesto
+  160       | llamada_suprograma
+  161       | IDENTIFICADOR
+
+  162 componente_indexado: nombre '[' expresion ']'
+
+  163 componente_hash: nombre '{' expresion '}'
+
+  164 componente_compuesto: nombre '.' IDENTIFICADOR
+  165                     | nombre '.' llamada_suprograma
+
+  166 expresion_logica: CTC_FLOAT
+  167                 | CTC_INT
+  168                 | expresion_logica OR expresion_logica
+  169                 | expresion_logica AND expresion_logica
+  170                 | NOT expresion_logica
+  171                 | expresion_logica MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica MENOR_IGUAL expresion_logica
+  173                 | expresion_logica '>' expresion_logica
+  174                 | expresion_logica '<' expresion_logica
+  175                 | expresion_logica DISTINTO expresion_logica
+  176                 | expresion_logica '=' expresion_logica
+  177                 | expresion_logica '@' expresion_logica
+  178                 | expresion_logica '&' expresion_logica
+  179                 | expresion_logica '+' expresion_logica
+  180                 | expresion_logica '-' expresion_logica
+  181                 | expresion_logica MOD expresion_logica
+  182                 | expresion_logica '%' expresion_logica
+  183                 | expresion_logica '*' expresion_logica
+  184                 | expresion_logica EXP expresion_logica
+  185                 | '-' expresion_logica
+
+  186 expresion: expresion_logica
+  187          | expresion_logica IF expresion ELSE expresion
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '%' (37) 182
+    '&' (38) 178
+    '(' (40) 32 46 53 81 84 144 147 149 150
+    ')' (41) 32 46 53 81 84 144 147 149 150
+    '*' (42) 183
+    '+' (43) 179
+    ',' (44) 13 20 37 39 41 51 77
+    '-' (45) 180 185
+    '.' (46) 164 165
+    ':' (58) 4 5 6 7 8 9 10 11 50 91 92 133
+    ';' (59) 4 5 6 7 8 9 10 11 42 50 78 79 90 113 114 115 116 117 118 119 120 121 122 132 133 139 148
+    '<' (60) 51 174
+    '=' (61) 176
+    '>' (62) 51 173
+    '@' (64) 177
+    '[' (91) 30 162
+    ']' (93) 30 162
+    '{' (123) 31 163
+    '|' (124) 131
+    '}' (125) 31 163
+    error (256)
+    ABSTRACT (258) 68
+    AND (259) 169
+    ARRAY (260) 46
+    ASIG (261) 18 29 35 114
+    BOOLEAN (262) 16
+    CLASS (263) 52 53
+    CONSTRUCTOR (264) 66
+    CTC_CADENA (265) 151
+    CTC_CARACTER (266) 152
+    CTC_FLOAT (267) 153 166
+    CTC_INT (268) 154 167
+    CASE (269) 122
+    CHARACTER (270) 17
+    CONSTANT (271) 5 7 9 11
+    DEFAULT (272) 147
+    DESTRUCTOR (273) 67
+    DISTINTO (274) 175
+    DOS_PTOS (275) 46 128 134 135
+    ELSE (276) 121 187
+    ENUMERATION (277) 73
+    ESPECIFIC (278) 69
+    EXCEPTION (279) 144
+    EXIT (280) 116 117 118 119
+    EXP (281) 184
+    FALSE (282) 156
+    FINAL (283) 70
+    FINISH (284) 47 52 53 73 95 96 97 98 120 121 122 138 140
+    FLECHA (285) 34 75 123 124
+    FLOAT (286) 15
+    FOREACH (287) 136
+    FOR (288) 134 135
+    FUNCTION (289) 82 84
+    HASHTABLE (290) 51
+    IDENTIFICADOR (291) 12 13 23 35 42 75 80 81 82 84 96 98 117 119 133 134 135 136 139 144 147 149 150 161 164
+    IF (292) 120 121 187
+    IN (293) 93 94 134 135 136
+    INTEGER (294) 14
+    IS (295) 42 95 96 97 98 122
+    LOOP (296) 138
+    MAYOR_IGUAL (297) 171
+    MENOR_IGUAL (298) 172
+    MOD (299) 181
+    NOT (300) 170
+    NIL (301) 113
+    OF (302) 46 51 73
+    OR (303) 168
+    OTHERS (304) 129
+    OUT (305) 94
+    PROCEDURE (306) 80 81
+    PRIVATE (307) 63
+    PROTECTED (308) 62
+    PUBLIC (309) 61
+    RAISE (310) 139
+    RECORD (311) 47
+    RETURN (312) 84 115
+    REVERSE (313) 135
+    START (314) 95 96 97 98
+    THEN (315) 120 121
+    TRUE (316) 155
+    TRY (317) 140
+    TYPE (318) 42
+    WHEN (319) 118 119 123 124
+    WHILE (320) 137
+
+
+Nonterminals, with rules where they appear
+
+    $accept (86)
+        on left: 0
+    declaracion (87)
+        on left: 1 2 3
+        on right: 0 101 102
+    declaracion_objeto (88)
+        on left: 4 5 6 7 8 9 10 11
+        on right: 1 58
+    lista_identificadores (89)
+        on left: 12 13
+        on right: 4 5 6 7 8 9 10 11 13 50 91 92
+    tipo_escalar (90)
+        on left: 14 15 16 17
+        on right: 4 5 6 7 43 73
+    asignacion_escalar (91)
+        on left: 18
+        on right: 6 7
+    lista_expresion (92)
+        on left: 19 20
+        on right: 18 20 150
+    tipo_complejo (93)
+        on left: 21 22
+        on right: 8 9 10 11
+    nombre_de_tipo (94)
+        on left: 23
+        on right: 21 44 53
+    tipo_compuesto (95)
+        on left: 24 25 26 27 28
+        on right: 22 45
+    asignacion_complejo (96)
+        on left: 29
+        on right: 10 11
+    objeto_complejo (97)
+        on left: 30 31 32 33
+        on right: 29 34 35 36 37
+    elemento_hastable (98)
+        on left: 34
+        on right: 38 39
+    elemento_registro (99)
+        on left: 35
+        on right: 40 41
+    lista_objeto_complejo (100)
+        on left: 36 37
+        on right: 30 37
+    lista_elemento_hastable (101)
+        on left: 38 39
+        on right: 31 39
+    lista_elemento_registro (102)
+        on left: 40 41
+        on right: 32 41
+    declaracion_tipo (103)
+        on left: 42
+        on right: 2 59
+    especificacion_tipo (104)
+        on left: 43 44 45
+        on right: 42 46 50 51 84 91 92
+    tipo_tablero (105)
+        on left: 46
+        on right: 24
+    tipo_registro (106)
+        on left: 47
+        on right: 25
+    lista_componente (107)
+        on left: 48 49
+        on right: 47 49
+    componente (108)
+        on left: 50
+        on right: 48 49
+    tipo_hashtable (109)
+        on left: 51
+        on right: 26
+    tipo_clase (110)
+        on left: 52 53
+        on right: 27
+    lista_componente_clase (111)
+        on left: 54 55
+        on right: 52 53 55
+    componente_clase (112)
+        on left: 56 57
+        on right: 54 55
+    declaracion_componente (113)
+        on left: 58 59 60
+        on right: 56 57
+    visibilidad (114)
+        on left: 61 62 63
+        on right: 57
+    declaracion_metodo (115)
+        on left: 64 65
+        on right: 60
+    modificador (116)
+        on left: 66 67 68 69 70
+        on right: 71 72
+    lista_modificador (117)
+        on left: 71 72
+        on right: 65 72
+    tipo_enumeracion (118)
+        on left: 73
+        on right: 28
+    elemento (119)
+        on left: 74 75
+        on right: 76 77
+    lista_elemento (120)
+        on left: 76 77
+        on right: 73 77
+    declaracion_subprograma (121)
+        on left: 78 79
+        on right: 3 64 65
+    especificacion_subprograma (122)
+        on left: 80 81 82 84
+        on right: 78 79
+    $@1 (123)
+        on left: 83
+        on right: 84
+    parte_formal (124)
+        on left: 85 86
+        on right: 81 84
+    declaracion_parametros (125)
+        on left: 87 88
+        on right: 86
+    lista_declaracion_parametro (126)
+        on left: 89 90
+        on right: 88 90
+    declaracion_parametro (127)
+        on left: 91 92
+        on right: 87 88 89 90
+    modo (128)
+        on left: 93 94
+        on right: 92
+    cuerpo_subprograma (129)
+        on left: 95 96 97 98
+        on right: 79
+    lista_instruccion (130)
+        on left: 99 100
+        on right: 95 96 97 98 100 120 121 123 124 138 140 144 147
+    lista_declaracion (131)
+        on left: 101 102
+        on right: 97 98 102
+    instruccion (132)
+        on left: 103 104 105 106 107 108 109 110 111 112
+        on right: 99 100
+    instruccion_vacia (133)
+        on left: 113
+        on right: 103
+    instruccion_asignacion (134)
+        on left: 114
+        on right: 104
+    instruccion_return (135)
+        on left: 115
+        on right: 106
+    instruccion_exit (136)
+        on left: 116 117 118 119
+        on right: 105
+    instruccion_if (137)
+        on left: 120 121
+        on right: 107
+    instruccion_case (138)
+        on left: 122
+        on right: 108
+    caso_when (139)
+        on left: 123 124
+        on right: 125 126
+    lista_caso_when (140)
+        on left: 125 126
+        on right: 122 126
+    entrada (141)
+        on left: 127 128 129
+        on right: 123 124 130 131
+    lista_entrada (142)
+        on left: 130 131
+        on right: 124 131
+    instruccion_loop (143)
+        on left: 132 133
+        on right: 109
+    clausula_iteracion (144)
+        on left: 134 135 136 137
+        on right: 132 133
+    bucle_base (145)
+        on left: 138
+        on right: 132 133
+    instruccion_rise (146)
+        on left: 139
+        on right: 110
+    instruccion_try_catch (147)
+        on left: 140
+        on right: 111
+    clausulas_excepcion (148)
+        on left: 141 142 143
+        on right: 140
+    clausula_especifica (149)
+        on left: 144
+        on right: 145 146
+    lista_clausula_especifica (150)
+        on left: 145 146
+        on right: 142 143 146
+    clausula_defecto (151)
+        on left: 147
+        on right: 141 142
+    llamada_procedure (152)
+        on left: 148
+        on right: 112
+    llamada_suprograma (153)
+        on left: 149 150
+        on right: 148 160 165
+    literal (154)
+        on left: 151 152 153 154 155 156
+        on right: 33 74 75
+    nombre (155)
+        on left: 157 158 159 160 161
+        on right: 114 162 163 164 165
+    componente_indexado (156)
+        on left: 162
+        on right: 157
+    componente_hash (157)
+        on left: 163
+        on right: 158
+    componente_compuesto (158)
+        on left: 164 165
+        on right: 159
+    expresion_logica (159)
+        on left: 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185
+        on right: 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187
+    expresion (160)
+        on left: 186 187
+        on right: 19 20 46 114 115 118 119 120 121 122 127 128 134 135 136 137 162 163 187
+
+
+State 0
+
+    0 $accept: . declaracion $end
+
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    TYPE           shift, and go to state 4
+
+    declaracion                 go to state 5
+    declaracion_objeto          go to state 6
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 8
+    declaracion_subprograma     go to state 9
+    especificacion_subprograma  go to state 10
+
+
+State 1
+
+   82 especificacion_subprograma: FUNCTION . IDENTIFICADOR
+   84                           | FUNCTION . IDENTIFICADOR '(' parte_formal ')' $@1 RETURN especificacion_tipo
+
+    IDENTIFICADOR  shift, and go to state 11
+
+
+State 2
+
+   12 lista_identificadores: IDENTIFICADOR .
+
+    $default  reduce using rule 12 (lista_identificadores)
+
+
+State 3
+
+   80 especificacion_subprograma: PROCEDURE . IDENTIFICADOR
+   81                           | PROCEDURE . IDENTIFICADOR '(' parte_formal ')'
+
+    IDENTIFICADOR  shift, and go to state 12
+
+
+State 4
+
+   42 declaracion_tipo: TYPE . IDENTIFICADOR IS especificacion_tipo ';'
+
+    IDENTIFICADOR  shift, and go to state 13
+
+
+State 5
+
+    0 $accept: declaracion . $end
+
+    $end  shift, and go to state 14
+
+
+State 6
+
+    1 declaracion: declaracion_objeto .
+
+    $default  reduce using rule 1 (declaracion)
+
+
+State 7
+
+    4 declaracion_objeto: lista_identificadores . ':' tipo_escalar ';'
+    5                   | lista_identificadores . ':' CONSTANT tipo_escalar ';'
+    6                   | lista_identificadores . ':' tipo_escalar asignacion_escalar ';'
+    7                   | lista_identificadores . ':' CONSTANT tipo_escalar asignacion_escalar ';'
+    8                   | lista_identificadores . ':' tipo_complejo ';'
+    9                   | lista_identificadores . ':' CONSTANT tipo_complejo ';'
+   10                   | lista_identificadores . ':' tipo_complejo asignacion_complejo ';'
+   11                   | lista_identificadores . ':' CONSTANT tipo_complejo asignacion_complejo ';'
+   13 lista_identificadores: lista_identificadores . ',' IDENTIFICADOR
+
+    ':'  shift, and go to state 15
+    ','  shift, and go to state 16
+
+
+State 8
+
+    2 declaracion: declaracion_tipo .
+
+    $default  reduce using rule 2 (declaracion)
+
+
+State 9
+
+    3 declaracion: declaracion_subprograma .
+
+    $default  reduce using rule 3 (declaracion)
+
+
+State 10
+
+   78 declaracion_subprograma: especificacion_subprograma . ';'
+   79                        | especificacion_subprograma . cuerpo_subprograma ';'
+
+    IS   shift, and go to state 17
+    ';'  shift, and go to state 18
+
+    cuerpo_subprograma  go to state 19
+
+
+State 11
+
+   82 especificacion_subprograma: FUNCTION IDENTIFICADOR .
+   84                           | FUNCTION IDENTIFICADOR . '(' parte_formal ')' $@1 RETURN especificacion_tipo
+
+    '('  shift, and go to state 20
+
+    $default  reduce using rule 82 (especificacion_subprograma)
+
+
+State 12
+
+   80 especificacion_subprograma: PROCEDURE IDENTIFICADOR .
+   81                           | PROCEDURE IDENTIFICADOR . '(' parte_formal ')'
+
+    '('  shift, and go to state 21
+
+    $default  reduce using rule 80 (especificacion_subprograma)
+
+
+State 13
+
+   42 declaracion_tipo: TYPE IDENTIFICADOR . IS especificacion_tipo ';'
+
+    IS  shift, and go to state 22
+
+
+State 14
+
+    0 $accept: declaracion $end .
+
+    $default  accept
+
+
+State 15
+
+    4 declaracion_objeto: lista_identificadores ':' . tipo_escalar ';'
+    5                   | lista_identificadores ':' . CONSTANT tipo_escalar ';'
+    6                   | lista_identificadores ':' . tipo_escalar asignacion_escalar ';'
+    7                   | lista_identificadores ':' . CONSTANT tipo_escalar asignacion_escalar ';'
+    8                   | lista_identificadores ':' . tipo_complejo ';'
+    9                   | lista_identificadores ':' . CONSTANT tipo_complejo ';'
+   10                   | lista_identificadores ':' . tipo_complejo asignacion_complejo ';'
+   11                   | lista_identificadores ':' . CONSTANT tipo_complejo asignacion_complejo ';'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    CONSTANT       shift, and go to state 27
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar      go to state 34
+    tipo_complejo     go to state 35
+    nombre_de_tipo    go to state 36
+    tipo_compuesto    go to state 37
+    tipo_tablero      go to state 38
+    tipo_registro     go to state 39
+    tipo_hashtable    go to state 40
+    tipo_clase        go to state 41
+    tipo_enumeracion  go to state 42
+
+
+State 16
+
+   13 lista_identificadores: lista_identificadores ',' . IDENTIFICADOR
+
+    IDENTIFICADOR  shift, and go to state 43
+
+
+State 17
+
+   95 cuerpo_subprograma: IS . START lista_instruccion FINISH
+   96                   | IS . START lista_instruccion FINISH IDENTIFICADOR
+   97                   | IS . lista_declaracion START lista_instruccion FINISH
+   98                   | IS . lista_declaracion START lista_instruccion FINISH IDENTIFICADOR
+
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    START          shift, and go to state 44
+    TYPE           shift, and go to state 4
+
+    declaracion                 go to state 45
+    declaracion_objeto          go to state 6
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 8
+    declaracion_subprograma     go to state 9
+    especificacion_subprograma  go to state 10
+    lista_declaracion           go to state 46
+
+
+State 18
+
+   78 declaracion_subprograma: especificacion_subprograma ';' .
+
+    $default  reduce using rule 78 (declaracion_subprograma)
+
+
+State 19
+
+   79 declaracion_subprograma: especificacion_subprograma cuerpo_subprograma . ';'
+
+    ';'  shift, and go to state 47
+
+
+State 20
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' . parte_formal ')' $@1 RETURN especificacion_tipo
+
+    IDENTIFICADOR  shift, and go to state 2
+
+    $default  reduce using rule 85 (parte_formal)
+
+    lista_identificadores   go to state 48
+    parte_formal            go to state 49
+    declaracion_parametros  go to state 50
+    declaracion_parametro   go to state 51
+
+
+State 21
+
+   81 especificacion_subprograma: PROCEDURE IDENTIFICADOR '(' . parte_formal ')'
+
+    IDENTIFICADOR  shift, and go to state 2
+
+    $default  reduce using rule 85 (parte_formal)
+
+    lista_identificadores   go to state 48
+    parte_formal            go to state 52
+    declaracion_parametros  go to state 50
+    declaracion_parametro   go to state 51
+
+
+State 22
+
+   42 declaracion_tipo: TYPE IDENTIFICADOR IS . especificacion_tipo ';'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 56
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 23
+
+   46 tipo_tablero: ARRAY . '(' expresion DOS_PTOS expresion ')' OF especificacion_tipo
+
+    '('  shift, and go to state 57
+
+
+State 24
+
+   16 tipo_escalar: BOOLEAN .
+
+    $default  reduce using rule 16 (tipo_escalar)
+
+
+State 25
+
+   52 tipo_clase: CLASS . lista_componente_clase FINISH CLASS
+   53           | CLASS . '(' nombre_de_tipo ')' lista_componente_clase FINISH CLASS
+
+    ABSTRACT       shift, and go to state 58
+    CONSTRUCTOR    shift, and go to state 59
+    DESTRUCTOR     shift, and go to state 60
+    ESPECIFIC      shift, and go to state 61
+    FINAL          shift, and go to state 62
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    PRIVATE        shift, and go to state 63
+    PROTECTED      shift, and go to state 64
+    PUBLIC         shift, and go to state 65
+    TYPE           shift, and go to state 4
+    '('            shift, and go to state 66
+
+    declaracion_objeto          go to state 67
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 68
+    lista_componente_clase      go to state 69
+    componente_clase            go to state 70
+    declaracion_componente      go to state 71
+    visibilidad                 go to state 72
+    declaracion_metodo          go to state 73
+    modificador                 go to state 74
+    lista_modificador           go to state 75
+    declaracion_subprograma     go to state 76
+    especificacion_subprograma  go to state 10
+
+
+State 26
+
+   17 tipo_escalar: CHARACTER .
+
+    $default  reduce using rule 17 (tipo_escalar)
+
+
+State 27
+
+    5 declaracion_objeto: lista_identificadores ':' CONSTANT . tipo_escalar ';'
+    7                   | lista_identificadores ':' CONSTANT . tipo_escalar asignacion_escalar ';'
+    9                   | lista_identificadores ':' CONSTANT . tipo_complejo ';'
+   11                   | lista_identificadores ':' CONSTANT . tipo_complejo asignacion_complejo ';'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar      go to state 77
+    tipo_complejo     go to state 78
+    nombre_de_tipo    go to state 36
+    tipo_compuesto    go to state 37
+    tipo_tablero      go to state 38
+    tipo_registro     go to state 39
+    tipo_hashtable    go to state 40
+    tipo_clase        go to state 41
+    tipo_enumeracion  go to state 42
+
+
+State 28
+
+   73 tipo_enumeracion: ENUMERATION . OF tipo_escalar lista_elemento FINISH ENUMERATION
+
+    OF  shift, and go to state 79
+
+
+State 29
+
+   15 tipo_escalar: FLOAT .
+
+    $default  reduce using rule 15 (tipo_escalar)
+
+
+State 30
+
+   51 tipo_hashtable: HASHTABLE . OF '<' especificacion_tipo ',' especificacion_tipo '>'
+
+    OF  shift, and go to state 80
+
+
+State 31
+
+   23 nombre_de_tipo: IDENTIFICADOR .
+
+    $default  reduce using rule 23 (nombre_de_tipo)
+
+
+State 32
+
+   14 tipo_escalar: INTEGER .
+
+    $default  reduce using rule 14 (tipo_escalar)
+
+
+State 33
+
+   47 tipo_registro: RECORD . lista_componente FINISH RECORD
+
+    IDENTIFICADOR  shift, and go to state 2
+
+    lista_identificadores  go to state 81
+    lista_componente       go to state 82
+    componente             go to state 83
+
+
+State 34
+
+    4 declaracion_objeto: lista_identificadores ':' tipo_escalar . ';'
+    6                   | lista_identificadores ':' tipo_escalar . asignacion_escalar ';'
+
+    ASIG  shift, and go to state 84
+    ';'   shift, and go to state 85
+
+    asignacion_escalar  go to state 86
+
+
+State 35
+
+    8 declaracion_objeto: lista_identificadores ':' tipo_complejo . ';'
+   10                   | lista_identificadores ':' tipo_complejo . asignacion_complejo ';'
+
+    ASIG  shift, and go to state 87
+    ';'   shift, and go to state 88
+
+    asignacion_complejo  go to state 89
+
+
+State 36
+
+   21 tipo_complejo: nombre_de_tipo .
+
+    $default  reduce using rule 21 (tipo_complejo)
+
+
+State 37
+
+   22 tipo_complejo: tipo_compuesto .
+
+    $default  reduce using rule 22 (tipo_complejo)
+
+
+State 38
+
+   24 tipo_compuesto: tipo_tablero .
+
+    $default  reduce using rule 24 (tipo_compuesto)
+
+
+State 39
+
+   25 tipo_compuesto: tipo_registro .
+
+    $default  reduce using rule 25 (tipo_compuesto)
+
+
+State 40
+
+   26 tipo_compuesto: tipo_hashtable .
+
+    $default  reduce using rule 26 (tipo_compuesto)
+
+
+State 41
+
+   27 tipo_compuesto: tipo_clase .
+
+    $default  reduce using rule 27 (tipo_compuesto)
+
+
+State 42
+
+   28 tipo_compuesto: tipo_enumeracion .
+
+    $default  reduce using rule 28 (tipo_compuesto)
+
+
+State 43
+
+   13 lista_identificadores: lista_identificadores ',' IDENTIFICADOR .
+
+    $default  reduce using rule 13 (lista_identificadores)
+
+
+State 44
+
+   95 cuerpo_subprograma: IS START . lista_instruccion FINISH
+   96                   | IS START . lista_instruccion FINISH IDENTIFICADOR
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 101
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 45
+
+  101 lista_declaracion: declaracion .
+
+    $default  reduce using rule 101 (lista_declaracion)
+
+
+State 46
+
+   97 cuerpo_subprograma: IS lista_declaracion . START lista_instruccion FINISH
+   98                   | IS lista_declaracion . START lista_instruccion FINISH IDENTIFICADOR
+  102 lista_declaracion: lista_declaracion . declaracion
+
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    START          shift, and go to state 119
+    TYPE           shift, and go to state 4
+
+    declaracion                 go to state 120
+    declaracion_objeto          go to state 6
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 8
+    declaracion_subprograma     go to state 9
+    especificacion_subprograma  go to state 10
+
+
+State 47
+
+   79 declaracion_subprograma: especificacion_subprograma cuerpo_subprograma ';' .
+
+    $default  reduce using rule 79 (declaracion_subprograma)
+
+
+State 48
+
+   13 lista_identificadores: lista_identificadores . ',' IDENTIFICADOR
+   91 declaracion_parametro: lista_identificadores . ':' especificacion_tipo
+   92                      | lista_identificadores . ':' modo especificacion_tipo
+
+    ':'  shift, and go to state 121
+    ','  shift, and go to state 16
+
+
+State 49
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal . ')' $@1 RETURN especificacion_tipo
+
+    ')'  shift, and go to state 122
+
+
+State 50
+
+   86 parte_formal: declaracion_parametros .
+
+    $default  reduce using rule 86 (parte_formal)
+
+
+State 51
+
+   87 declaracion_parametros: declaracion_parametro .
+   88                       | declaracion_parametro . lista_declaracion_parametro
+
+    IDENTIFICADOR  shift, and go to state 2
+
+    $default  reduce using rule 87 (declaracion_parametros)
+
+    lista_identificadores        go to state 48
+    lista_declaracion_parametro  go to state 123
+    declaracion_parametro        go to state 124
+
+
+State 52
+
+   81 especificacion_subprograma: PROCEDURE IDENTIFICADOR '(' parte_formal . ')'
+
+    ')'  shift, and go to state 125
+
+
+State 53
+
+   43 especificacion_tipo: tipo_escalar .
+
+    $default  reduce using rule 43 (especificacion_tipo)
+
+
+State 54
+
+   44 especificacion_tipo: nombre_de_tipo .
+
+    $default  reduce using rule 44 (especificacion_tipo)
+
+
+State 55
+
+   45 especificacion_tipo: tipo_compuesto .
+
+    $default  reduce using rule 45 (especificacion_tipo)
+
+
+State 56
+
+   42 declaracion_tipo: TYPE IDENTIFICADOR IS especificacion_tipo . ';'
+
+    ';'  shift, and go to state 126
+
+
+State 57
+
+   46 tipo_tablero: ARRAY '(' . expresion DOS_PTOS expresion ')' OF especificacion_tipo
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 132
+
+
+State 58
+
+   68 modificador: ABSTRACT .
+
+    $default  reduce using rule 68 (modificador)
+
+
+State 59
+
+   66 modificador: CONSTRUCTOR .
+
+    $default  reduce using rule 66 (modificador)
+
+
+State 60
+
+   67 modificador: DESTRUCTOR .
+
+    $default  reduce using rule 67 (modificador)
+
+
+State 61
+
+   69 modificador: ESPECIFIC .
+
+    $default  reduce using rule 69 (modificador)
+
+
+State 62
+
+   70 modificador: FINAL .
+
+    $default  reduce using rule 70 (modificador)
+
+
+State 63
+
+   63 visibilidad: PRIVATE .
+
+    $default  reduce using rule 63 (visibilidad)
+
+
+State 64
+
+   62 visibilidad: PROTECTED .
+
+    $default  reduce using rule 62 (visibilidad)
+
+
+State 65
+
+   61 visibilidad: PUBLIC .
+
+    $default  reduce using rule 61 (visibilidad)
+
+
+State 66
+
+   53 tipo_clase: CLASS '(' . nombre_de_tipo ')' lista_componente_clase FINISH CLASS
+
+    IDENTIFICADOR  shift, and go to state 31
+
+    nombre_de_tipo  go to state 133
+
+
+State 67
+
+   58 declaracion_componente: declaracion_objeto .
+
+    $default  reduce using rule 58 (declaracion_componente)
+
+
+State 68
+
+   59 declaracion_componente: declaracion_tipo .
+
+    $default  reduce using rule 59 (declaracion_componente)
+
+
+State 69
+
+   52 tipo_clase: CLASS lista_componente_clase . FINISH CLASS
+   55 lista_componente_clase: lista_componente_clase . componente_clase
+
+    ABSTRACT       shift, and go to state 58
+    CONSTRUCTOR    shift, and go to state 59
+    DESTRUCTOR     shift, and go to state 60
+    ESPECIFIC      shift, and go to state 61
+    FINAL          shift, and go to state 62
+    FINISH         shift, and go to state 134
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    PRIVATE        shift, and go to state 63
+    PROTECTED      shift, and go to state 64
+    PUBLIC         shift, and go to state 65
+    TYPE           shift, and go to state 4
+
+    declaracion_objeto          go to state 67
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 68
+    componente_clase            go to state 135
+    declaracion_componente      go to state 71
+    visibilidad                 go to state 72
+    declaracion_metodo          go to state 73
+    modificador                 go to state 74
+    lista_modificador           go to state 75
+    declaracion_subprograma     go to state 76
+    especificacion_subprograma  go to state 10
+
+
+State 70
+
+   54 lista_componente_clase: componente_clase .
+
+    $default  reduce using rule 54 (lista_componente_clase)
+
+
+State 71
+
+   56 componente_clase: declaracion_componente .
+
+    $default  reduce using rule 56 (componente_clase)
+
+
+State 72
+
+   57 componente_clase: visibilidad . declaracion_componente
+
+    ABSTRACT       shift, and go to state 58
+    CONSTRUCTOR    shift, and go to state 59
+    DESTRUCTOR     shift, and go to state 60
+    ESPECIFIC      shift, and go to state 61
+    FINAL          shift, and go to state 62
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    TYPE           shift, and go to state 4
+
+    declaracion_objeto          go to state 67
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 68
+    declaracion_componente      go to state 136
+    declaracion_metodo          go to state 73
+    modificador                 go to state 74
+    lista_modificador           go to state 75
+    declaracion_subprograma     go to state 76
+    especificacion_subprograma  go to state 10
+
+
+State 73
+
+   60 declaracion_componente: declaracion_metodo .
+
+    $default  reduce using rule 60 (declaracion_componente)
+
+
+State 74
+
+   71 lista_modificador: modificador .
+
+    $default  reduce using rule 71 (lista_modificador)
+
+
+State 75
+
+   65 declaracion_metodo: lista_modificador . declaracion_subprograma
+   72 lista_modificador: lista_modificador . modificador
+
+    ABSTRACT     shift, and go to state 58
+    CONSTRUCTOR  shift, and go to state 59
+    DESTRUCTOR   shift, and go to state 60
+    ESPECIFIC    shift, and go to state 61
+    FINAL        shift, and go to state 62
+    FUNCTION     shift, and go to state 1
+    PROCEDURE    shift, and go to state 3
+
+    modificador                 go to state 137
+    declaracion_subprograma     go to state 138
+    especificacion_subprograma  go to state 10
+
+
+State 76
+
+   64 declaracion_metodo: declaracion_subprograma .
+
+    $default  reduce using rule 64 (declaracion_metodo)
+
+
+State 77
+
+    5 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_escalar . ';'
+    7                   | lista_identificadores ':' CONSTANT tipo_escalar . asignacion_escalar ';'
+
+    ASIG  shift, and go to state 84
+    ';'   shift, and go to state 139
+
+    asignacion_escalar  go to state 140
+
+
+State 78
+
+    9 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_complejo . ';'
+   11                   | lista_identificadores ':' CONSTANT tipo_complejo . asignacion_complejo ';'
+
+    ASIG  shift, and go to state 87
+    ';'   shift, and go to state 141
+
+    asignacion_complejo  go to state 142
+
+
+State 79
+
+   73 tipo_enumeracion: ENUMERATION OF . tipo_escalar lista_elemento FINISH ENUMERATION
+
+    BOOLEAN    shift, and go to state 24
+    CHARACTER  shift, and go to state 26
+    FLOAT      shift, and go to state 29
+    INTEGER    shift, and go to state 32
+
+    tipo_escalar  go to state 143
+
+
+State 80
+
+   51 tipo_hashtable: HASHTABLE OF . '<' especificacion_tipo ',' especificacion_tipo '>'
+
+    '<'  shift, and go to state 144
+
+
+State 81
+
+   13 lista_identificadores: lista_identificadores . ',' IDENTIFICADOR
+   50 componente: lista_identificadores . ':' especificacion_tipo ';'
+
+    ':'  shift, and go to state 145
+    ','  shift, and go to state 16
+
+
+State 82
+
+   47 tipo_registro: RECORD lista_componente . FINISH RECORD
+   49 lista_componente: lista_componente . componente
+
+    FINISH         shift, and go to state 146
+    IDENTIFICADOR  shift, and go to state 2
+
+    lista_identificadores  go to state 81
+    componente             go to state 147
+
+
+State 83
+
+   48 lista_componente: componente .
+
+    $default  reduce using rule 48 (lista_componente)
+
+
+State 84
+
+   18 asignacion_escalar: ASIG . lista_expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    lista_expresion   go to state 148
+    expresion_logica  go to state 131
+    expresion         go to state 149
+
+
+State 85
+
+    4 declaracion_objeto: lista_identificadores ':' tipo_escalar ';' .
+
+    $default  reduce using rule 4 (declaracion_objeto)
+
+
+State 86
+
+    6 declaracion_objeto: lista_identificadores ':' tipo_escalar asignacion_escalar . ';'
+
+    ';'  shift, and go to state 150
+
+
+State 87
+
+   29 asignacion_complejo: ASIG . objeto_complejo
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo  go to state 160
+    literal          go to state 161
+
+
+State 88
+
+    8 declaracion_objeto: lista_identificadores ':' tipo_complejo ';' .
+
+    $default  reduce using rule 8 (declaracion_objeto)
+
+
+State 89
+
+   10 declaracion_objeto: lista_identificadores ':' tipo_complejo asignacion_complejo . ';'
+
+    ';'  shift, and go to state 162
+
+
+State 90
+
+  122 instruccion_case: CASE . expresion IS lista_caso_when FINISH CASE ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 163
+
+
+State 91
+
+  116 instruccion_exit: EXIT . ';'
+  117                 | EXIT . IDENTIFICADOR ';'
+  118                 | EXIT . WHEN expresion ';'
+  119                 | EXIT . IDENTIFICADOR WHEN expresion ';'
+
+    IDENTIFICADOR  shift, and go to state 164
+    WHEN           shift, and go to state 165
+    ';'            shift, and go to state 166
+
+
+State 92
+
+  136 clausula_iteracion: FOREACH . IDENTIFICADOR IN expresion
+
+    IDENTIFICADOR  shift, and go to state 167
+
+
+State 93
+
+  134 clausula_iteracion: FOR . IDENTIFICADOR IN expresion DOS_PTOS expresion
+  135                   | FOR . IDENTIFICADOR IN REVERSE expresion DOS_PTOS expresion
+
+    IDENTIFICADOR  shift, and go to state 168
+
+
+State 94
+
+  133 instruccion_loop: IDENTIFICADOR . ':' clausula_iteracion bucle_base ';'
+  149 llamada_suprograma: IDENTIFICADOR . '(' ')'
+  150                   | IDENTIFICADOR . '(' lista_expresion ')'
+  161 nombre: IDENTIFICADOR .
+
+    ':'  shift, and go to state 169
+    '('  shift, and go to state 170
+
+    $default  reduce using rule 161 (nombre)
+
+
+State 95
+
+  120 instruccion_if: IF . expresion THEN lista_instruccion FINISH IF ';'
+  121               | IF . expresion THEN lista_instruccion ELSE lista_instruccion FINISH IF ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 171
+
+
+State 96
+
+  113 instruccion_vacia: NIL . ';'
+
+    ';'  shift, and go to state 172
+
+
+State 97
+
+  139 instruccion_rise: RAISE . IDENTIFICADOR ';'
+
+    IDENTIFICADOR  shift, and go to state 173
+
+
+State 98
+
+  115 instruccion_return: RETURN . expresion ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 174
+
+
+State 99
+
+  140 instruccion_try_catch: TRY . lista_instruccion clausulas_excepcion FINISH TRY
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 175
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 100
+
+  137 clausula_iteracion: WHILE . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 176
+
+
+State 101
+
+   95 cuerpo_subprograma: IS START lista_instruccion . FINISH
+   96                   | IS START lista_instruccion . FINISH IDENTIFICADOR
+  100 lista_instruccion: lista_instruccion . instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FINISH         shift, and go to state 177
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 102
+
+   99 lista_instruccion: instruccion .
+
+    $default  reduce using rule 99 (lista_instruccion)
+
+
+State 103
+
+  103 instruccion: instruccion_vacia .
+
+    $default  reduce using rule 103 (instruccion)
+
+
+State 104
+
+  104 instruccion: instruccion_asignacion .
+
+    $default  reduce using rule 104 (instruccion)
+
+
+State 105
+
+  106 instruccion: instruccion_return .
+
+    $default  reduce using rule 106 (instruccion)
+
+
+State 106
+
+  105 instruccion: instruccion_exit .
+
+    $default  reduce using rule 105 (instruccion)
+
+
+State 107
+
+  107 instruccion: instruccion_if .
+
+    $default  reduce using rule 107 (instruccion)
+
+
+State 108
+
+  108 instruccion: instruccion_case .
+
+    $default  reduce using rule 108 (instruccion)
+
+
+State 109
+
+  109 instruccion: instruccion_loop .
+
+    $default  reduce using rule 109 (instruccion)
+
+
+State 110
+
+  132 instruccion_loop: clausula_iteracion . bucle_base ';'
+
+    LOOP  shift, and go to state 179
+
+    bucle_base  go to state 180
+
+
+State 111
+
+  110 instruccion: instruccion_rise .
+
+    $default  reduce using rule 110 (instruccion)
+
+
+State 112
+
+  111 instruccion: instruccion_try_catch .
+
+    $default  reduce using rule 111 (instruccion)
+
+
+State 113
+
+  112 instruccion: llamada_procedure .
+
+    $default  reduce using rule 112 (instruccion)
+
+
+State 114
+
+  148 llamada_procedure: llamada_suprograma . ';'
+  160 nombre: llamada_suprograma .
+
+    ';'  shift, and go to state 181
+
+    $default  reduce using rule 160 (nombre)
+
+
+State 115
+
+  114 instruccion_asignacion: nombre . ASIG expresion ';'
+  162 componente_indexado: nombre . '[' expresion ']'
+  163 componente_hash: nombre . '{' expresion '}'
+  164 componente_compuesto: nombre . '.' IDENTIFICADOR
+  165                     | nombre . '.' llamada_suprograma
+
+    ASIG  shift, and go to state 182
+    '['   shift, and go to state 183
+    '{'   shift, and go to state 184
+    '.'   shift, and go to state 185
+
+
+State 116
+
+  157 nombre: componente_indexado .
+
+    $default  reduce using rule 157 (nombre)
+
+
+State 117
+
+  158 nombre: componente_hash .
+
+    $default  reduce using rule 158 (nombre)
+
+
+State 118
+
+  159 nombre: componente_compuesto .
+
+    $default  reduce using rule 159 (nombre)
+
+
+State 119
+
+   97 cuerpo_subprograma: IS lista_declaracion START . lista_instruccion FINISH
+   98                   | IS lista_declaracion START . lista_instruccion FINISH IDENTIFICADOR
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 186
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 120
+
+  102 lista_declaracion: lista_declaracion declaracion .
+
+    $default  reduce using rule 102 (lista_declaracion)
+
+
+State 121
+
+   91 declaracion_parametro: lista_identificadores ':' . especificacion_tipo
+   92                      | lista_identificadores ':' . modo especificacion_tipo
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    IN             shift, and go to state 187
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 188
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+    modo                 go to state 189
+
+
+State 122
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal ')' . $@1 RETURN especificacion_tipo
+
+    $default  reduce using rule 83 ($@1)
+
+    $@1  go to state 190
+
+
+State 123
+
+   88 declaracion_parametros: declaracion_parametro lista_declaracion_parametro .
+
+    $default  reduce using rule 88 (declaracion_parametros)
+
+
+State 124
+
+   89 lista_declaracion_parametro: declaracion_parametro .
+   90                            | declaracion_parametro . ';' lista_declaracion_parametro
+
+    ';'  shift, and go to state 191
+
+    $default  reduce using rule 89 (lista_declaracion_parametro)
+
+
+State 125
+
+   81 especificacion_subprograma: PROCEDURE IDENTIFICADOR '(' parte_formal ')' .
+
+    $default  reduce using rule 81 (especificacion_subprograma)
+
+
+State 126
+
+   42 declaracion_tipo: TYPE IDENTIFICADOR IS especificacion_tipo ';' .
+
+    $default  reduce using rule 42 (declaracion_tipo)
+
+
+State 127
+
+  166 expresion_logica: CTC_FLOAT .
+
+    $default  reduce using rule 166 (expresion_logica)
+
+
+State 128
+
+  167 expresion_logica: CTC_INT .
+
+    $default  reduce using rule 167 (expresion_logica)
+
+
+State 129
+
+  170 expresion_logica: NOT . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 192
+
+
+State 130
+
+  185 expresion_logica: '-' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 193
+
+
+State 131
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+  186 expresion: expresion_logica .
+  187          | expresion_logica . IF expresion ELSE expresion
+
+    AND          shift, and go to state 194
+    DISTINTO     shift, and go to state 195
+    EXP          shift, and go to state 196
+    IF           shift, and go to state 197
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    MOD          shift, and go to state 200
+    OR           shift, and go to state 201
+    '@'          shift, and go to state 202
+    '&'          shift, and go to state 203
+    '+'          shift, and go to state 204
+    '-'          shift, and go to state 205
+    '*'          shift, and go to state 206
+    '%'          shift, and go to state 207
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    '-'       [reduce using rule 186 (expresion)]
+    $default  reduce using rule 186 (expresion)
+
+
+State 132
+
+   46 tipo_tablero: ARRAY '(' expresion . DOS_PTOS expresion ')' OF especificacion_tipo
+
+    DOS_PTOS  shift, and go to state 211
+
+
+State 133
+
+   53 tipo_clase: CLASS '(' nombre_de_tipo . ')' lista_componente_clase FINISH CLASS
+
+    ')'  shift, and go to state 212
+
+
+State 134
+
+   52 tipo_clase: CLASS lista_componente_clase FINISH . CLASS
+
+    CLASS  shift, and go to state 213
+
+
+State 135
+
+   55 lista_componente_clase: lista_componente_clase componente_clase .
+
+    $default  reduce using rule 55 (lista_componente_clase)
+
+
+State 136
+
+   57 componente_clase: visibilidad declaracion_componente .
+
+    $default  reduce using rule 57 (componente_clase)
+
+
+State 137
+
+   72 lista_modificador: lista_modificador modificador .
+
+    $default  reduce using rule 72 (lista_modificador)
+
+
+State 138
+
+   65 declaracion_metodo: lista_modificador declaracion_subprograma .
+
+    $default  reduce using rule 65 (declaracion_metodo)
+
+
+State 139
+
+    5 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_escalar ';' .
+
+    $default  reduce using rule 5 (declaracion_objeto)
+
+
+State 140
+
+    7 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_escalar asignacion_escalar . ';'
+
+    ';'  shift, and go to state 214
+
+
+State 141
+
+    9 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_complejo ';' .
+
+    $default  reduce using rule 9 (declaracion_objeto)
+
+
+State 142
+
+   11 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_complejo asignacion_complejo . ';'
+
+    ';'  shift, and go to state 215
+
+
+State 143
+
+   73 tipo_enumeracion: ENUMERATION OF tipo_escalar . lista_elemento FINISH ENUMERATION
+
+    CTC_CADENA     shift, and go to state 151
+    CTC_CARACTER   shift, and go to state 152
+    CTC_FLOAT      shift, and go to state 153
+    CTC_INT        shift, and go to state 154
+    FALSE          shift, and go to state 155
+    IDENTIFICADOR  shift, and go to state 216
+    TRUE           shift, and go to state 156
+
+    elemento        go to state 217
+    lista_elemento  go to state 218
+    literal         go to state 219
+
+
+State 144
+
+   51 tipo_hashtable: HASHTABLE OF '<' . especificacion_tipo ',' especificacion_tipo '>'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 220
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 145
+
+   50 componente: lista_identificadores ':' . especificacion_tipo ';'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 221
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 146
+
+   47 tipo_registro: RECORD lista_componente FINISH . RECORD
+
+    RECORD  shift, and go to state 222
+
+
+State 147
+
+   49 lista_componente: lista_componente componente .
+
+    $default  reduce using rule 49 (lista_componente)
+
+
+State 148
+
+   18 asignacion_escalar: ASIG lista_expresion .
+   20 lista_expresion: lista_expresion . ',' expresion
+
+    ','  shift, and go to state 223
+
+    $default  reduce using rule 18 (asignacion_escalar)
+
+
+State 149
+
+   19 lista_expresion: expresion .
+
+    $default  reduce using rule 19 (lista_expresion)
+
+
+State 150
+
+    6 declaracion_objeto: lista_identificadores ':' tipo_escalar asignacion_escalar ';' .
+
+    $default  reduce using rule 6 (declaracion_objeto)
+
+
+State 151
+
+  151 literal: CTC_CADENA .
+
+    $default  reduce using rule 151 (literal)
+
+
+State 152
+
+  152 literal: CTC_CARACTER .
+
+    $default  reduce using rule 152 (literal)
+
+
+State 153
+
+  153 literal: CTC_FLOAT .
+
+    $default  reduce using rule 153 (literal)
+
+
+State 154
+
+  154 literal: CTC_INT .
+
+    $default  reduce using rule 154 (literal)
+
+
+State 155
+
+  156 literal: FALSE .
+
+    $default  reduce using rule 156 (literal)
+
+
+State 156
+
+  155 literal: TRUE .
+
+    $default  reduce using rule 155 (literal)
+
+
+State 157
+
+   30 objeto_complejo: '[' . lista_objeto_complejo ']'
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo        go to state 224
+    lista_objeto_complejo  go to state 225
+    literal                go to state 161
+
+
+State 158
+
+   31 objeto_complejo: '{' . lista_elemento_hastable '}'
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo          go to state 226
+    elemento_hastable        go to state 227
+    lista_elemento_hastable  go to state 228
+    literal                  go to state 161
+
+
+State 159
+
+   32 objeto_complejo: '(' . lista_elemento_registro ')'
+
+    IDENTIFICADOR  shift, and go to state 229
+
+    elemento_registro        go to state 230
+    lista_elemento_registro  go to state 231
+
+
+State 160
+
+   29 asignacion_complejo: ASIG objeto_complejo .
+
+    $default  reduce using rule 29 (asignacion_complejo)
+
+
+State 161
+
+   33 objeto_complejo: literal .
+
+    $default  reduce using rule 33 (objeto_complejo)
+
+
+State 162
+
+   10 declaracion_objeto: lista_identificadores ':' tipo_complejo asignacion_complejo ';' .
+
+    $default  reduce using rule 10 (declaracion_objeto)
+
+
+State 163
+
+  122 instruccion_case: CASE expresion . IS lista_caso_when FINISH CASE ';'
+
+    IS  shift, and go to state 232
+
+
+State 164
+
+  117 instruccion_exit: EXIT IDENTIFICADOR . ';'
+  119                 | EXIT IDENTIFICADOR . WHEN expresion ';'
+
+    WHEN  shift, and go to state 233
+    ';'   shift, and go to state 234
+
+
+State 165
+
+  118 instruccion_exit: EXIT WHEN . expresion ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 235
+
+
+State 166
+
+  116 instruccion_exit: EXIT ';' .
+
+    $default  reduce using rule 116 (instruccion_exit)
+
+
+State 167
+
+  136 clausula_iteracion: FOREACH IDENTIFICADOR . IN expresion
+
+    IN  shift, and go to state 236
+
+
+State 168
+
+  134 clausula_iteracion: FOR IDENTIFICADOR . IN expresion DOS_PTOS expresion
+  135                   | FOR IDENTIFICADOR . IN REVERSE expresion DOS_PTOS expresion
+
+    IN  shift, and go to state 237
+
+
+State 169
+
+  133 instruccion_loop: IDENTIFICADOR ':' . clausula_iteracion bucle_base ';'
+
+    FOREACH  shift, and go to state 92
+    FOR      shift, and go to state 93
+    WHILE    shift, and go to state 100
+
+    clausula_iteracion  go to state 238
+
+
+State 170
+
+  149 llamada_suprograma: IDENTIFICADOR '(' . ')'
+  150                   | IDENTIFICADOR '(' . lista_expresion ')'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+    ')'        shift, and go to state 239
+
+    lista_expresion   go to state 240
+    expresion_logica  go to state 131
+    expresion         go to state 149
+
+
+State 171
+
+  120 instruccion_if: IF expresion . THEN lista_instruccion FINISH IF ';'
+  121               | IF expresion . THEN lista_instruccion ELSE lista_instruccion FINISH IF ';'
+
+    THEN  shift, and go to state 241
+
+
+State 172
+
+  113 instruccion_vacia: NIL ';' .
+
+    $default  reduce using rule 113 (instruccion_vacia)
+
+
+State 173
+
+  139 instruccion_rise: RAISE IDENTIFICADOR . ';'
+
+    ';'  shift, and go to state 242
+
+
+State 174
+
+  115 instruccion_return: RETURN expresion . ';'
+
+    ';'  shift, and go to state 243
+
+
+State 175
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  140 instruccion_try_catch: TRY lista_instruccion . clausulas_excepcion FINISH TRY
+
+    CASE           shift, and go to state 90
+    DEFAULT        shift, and go to state 244
+    EXCEPTION      shift, and go to state 245
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion                go to state 178
+    instruccion_vacia          go to state 103
+    instruccion_asignacion     go to state 104
+    instruccion_return         go to state 105
+    instruccion_exit           go to state 106
+    instruccion_if             go to state 107
+    instruccion_case           go to state 108
+    instruccion_loop           go to state 109
+    clausula_iteracion         go to state 110
+    instruccion_rise           go to state 111
+    instruccion_try_catch      go to state 112
+    clausulas_excepcion        go to state 246
+    clausula_especifica        go to state 247
+    lista_clausula_especifica  go to state 248
+    clausula_defecto           go to state 249
+    llamada_procedure          go to state 113
+    llamada_suprograma         go to state 114
+    nombre                     go to state 115
+    componente_indexado        go to state 116
+    componente_hash            go to state 117
+    componente_compuesto       go to state 118
+
+
+State 176
+
+  137 clausula_iteracion: WHILE expresion .
+
+    $default  reduce using rule 137 (clausula_iteracion)
+
+
+State 177
+
+   95 cuerpo_subprograma: IS START lista_instruccion FINISH .
+   96                   | IS START lista_instruccion FINISH . IDENTIFICADOR
+
+    IDENTIFICADOR  shift, and go to state 250
+
+    $default  reduce using rule 95 (cuerpo_subprograma)
+
+
+State 178
+
+  100 lista_instruccion: lista_instruccion instruccion .
+
+    $default  reduce using rule 100 (lista_instruccion)
+
+
+State 179
+
+  138 bucle_base: LOOP . lista_instruccion FINISH LOOP
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 251
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 180
+
+  132 instruccion_loop: clausula_iteracion bucle_base . ';'
+
+    ';'  shift, and go to state 252
+
+
+State 181
+
+  148 llamada_procedure: llamada_suprograma ';' .
+
+    $default  reduce using rule 148 (llamada_procedure)
+
+
+State 182
+
+  114 instruccion_asignacion: nombre ASIG . expresion ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 253
+
+
+State 183
+
+  162 componente_indexado: nombre '[' . expresion ']'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 254
+
+
+State 184
+
+  163 componente_hash: nombre '{' . expresion '}'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 255
+
+
+State 185
+
+  164 componente_compuesto: nombre '.' . IDENTIFICADOR
+  165                     | nombre '.' . llamada_suprograma
+
+    IDENTIFICADOR  shift, and go to state 256
+
+    llamada_suprograma  go to state 257
+
+
+State 186
+
+   97 cuerpo_subprograma: IS lista_declaracion START lista_instruccion . FINISH
+   98                   | IS lista_declaracion START lista_instruccion . FINISH IDENTIFICADOR
+  100 lista_instruccion: lista_instruccion . instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FINISH         shift, and go to state 258
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 187
+
+   93 modo: IN .
+   94     | IN . OUT
+
+    OUT  shift, and go to state 259
+
+    $default  reduce using rule 93 (modo)
+
+
+State 188
+
+   91 declaracion_parametro: lista_identificadores ':' especificacion_tipo .
+
+    $default  reduce using rule 91 (declaracion_parametro)
+
+
+State 189
+
+   92 declaracion_parametro: lista_identificadores ':' modo . especificacion_tipo
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 260
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 190
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal ')' $@1 . RETURN especificacion_tipo
+
+    RETURN  shift, and go to state 261
+
+
+State 191
+
+   90 lista_declaracion_parametro: declaracion_parametro ';' . lista_declaracion_parametro
+
+    IDENTIFICADOR  shift, and go to state 2
+
+    lista_identificadores        go to state 48
+    lista_declaracion_parametro  go to state 262
+    declaracion_parametro        go to state 124
+
+
+State 192
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  170                 | NOT expresion_logica .
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 170 (expresion_logica)
+
+
+State 193
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+  185                 | '-' expresion_logica .
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 185 (expresion_logica)
+
+
+State 194
+
+  169 expresion_logica: expresion_logica AND . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 263
+
+
+State 195
+
+  175 expresion_logica: expresion_logica DISTINTO . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 264
+
+
+State 196
+
+  184 expresion_logica: expresion_logica EXP . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 265
+
+
+State 197
+
+  187 expresion: expresion_logica IF . expresion ELSE expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 266
+
+
+State 198
+
+  171 expresion_logica: expresion_logica MAYOR_IGUAL . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 267
+
+
+State 199
+
+  172 expresion_logica: expresion_logica MENOR_IGUAL . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 268
+
+
+State 200
+
+  181 expresion_logica: expresion_logica MOD . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 269
+
+
+State 201
+
+  168 expresion_logica: expresion_logica OR . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 270
+
+
+State 202
+
+  177 expresion_logica: expresion_logica '@' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 271
+
+
+State 203
+
+  178 expresion_logica: expresion_logica '&' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 272
+
+
+State 204
+
+  179 expresion_logica: expresion_logica '+' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 273
+
+
+State 205
+
+  180 expresion_logica: expresion_logica '-' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 274
+
+
+State 206
+
+  183 expresion_logica: expresion_logica '*' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 275
+
+
+State 207
+
+  182 expresion_logica: expresion_logica '%' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 276
+
+
+State 208
+
+  176 expresion_logica: expresion_logica '=' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 277
+
+
+State 209
+
+  174 expresion_logica: expresion_logica '<' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 278
+
+
+State 210
+
+  173 expresion_logica: expresion_logica '>' . expresion_logica
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 279
+
+
+State 211
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS . expresion ')' OF especificacion_tipo
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 280
+
+
+State 212
+
+   53 tipo_clase: CLASS '(' nombre_de_tipo ')' . lista_componente_clase FINISH CLASS
+
+    ABSTRACT       shift, and go to state 58
+    CONSTRUCTOR    shift, and go to state 59
+    DESTRUCTOR     shift, and go to state 60
+    ESPECIFIC      shift, and go to state 61
+    FINAL          shift, and go to state 62
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    PRIVATE        shift, and go to state 63
+    PROTECTED      shift, and go to state 64
+    PUBLIC         shift, and go to state 65
+    TYPE           shift, and go to state 4
+
+    declaracion_objeto          go to state 67
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 68
+    lista_componente_clase      go to state 281
+    componente_clase            go to state 70
+    declaracion_componente      go to state 71
+    visibilidad                 go to state 72
+    declaracion_metodo          go to state 73
+    modificador                 go to state 74
+    lista_modificador           go to state 75
+    declaracion_subprograma     go to state 76
+    especificacion_subprograma  go to state 10
+
+
+State 213
+
+   52 tipo_clase: CLASS lista_componente_clase FINISH CLASS .
+
+    $default  reduce using rule 52 (tipo_clase)
+
+
+State 214
+
+    7 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_escalar asignacion_escalar ';' .
+
+    $default  reduce using rule 7 (declaracion_objeto)
+
+
+State 215
+
+   11 declaracion_objeto: lista_identificadores ':' CONSTANT tipo_complejo asignacion_complejo ';' .
+
+    $default  reduce using rule 11 (declaracion_objeto)
+
+
+State 216
+
+   75 elemento: IDENTIFICADOR . FLECHA literal
+
+    FLECHA  shift, and go to state 282
+
+
+State 217
+
+   76 lista_elemento: elemento .
+
+    $default  reduce using rule 76 (lista_elemento)
+
+
+State 218
+
+   73 tipo_enumeracion: ENUMERATION OF tipo_escalar lista_elemento . FINISH ENUMERATION
+   77 lista_elemento: lista_elemento . ',' elemento
+
+    FINISH  shift, and go to state 283
+    ','     shift, and go to state 284
+
+
+State 219
+
+   74 elemento: literal .
+
+    $default  reduce using rule 74 (elemento)
+
+
+State 220
+
+   51 tipo_hashtable: HASHTABLE OF '<' especificacion_tipo . ',' especificacion_tipo '>'
+
+    ','  shift, and go to state 285
+
+
+State 221
+
+   50 componente: lista_identificadores ':' especificacion_tipo . ';'
+
+    ';'  shift, and go to state 286
+
+
+State 222
+
+   47 tipo_registro: RECORD lista_componente FINISH RECORD .
+
+    $default  reduce using rule 47 (tipo_registro)
+
+
+State 223
+
+   20 lista_expresion: lista_expresion ',' . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 287
+
+
+State 224
+
+   36 lista_objeto_complejo: objeto_complejo .
+
+    $default  reduce using rule 36 (lista_objeto_complejo)
+
+
+State 225
+
+   30 objeto_complejo: '[' lista_objeto_complejo . ']'
+   37 lista_objeto_complejo: lista_objeto_complejo . ',' objeto_complejo
+
+    ','  shift, and go to state 288
+    ']'  shift, and go to state 289
+
+
+State 226
+
+   34 elemento_hastable: objeto_complejo . FLECHA objeto_complejo
+
+    FLECHA  shift, and go to state 290
+
+
+State 227
+
+   38 lista_elemento_hastable: elemento_hastable .
+
+    $default  reduce using rule 38 (lista_elemento_hastable)
+
+
+State 228
+
+   31 objeto_complejo: '{' lista_elemento_hastable . '}'
+   39 lista_elemento_hastable: lista_elemento_hastable . ',' elemento_hastable
+
+    ','  shift, and go to state 291
+    '}'  shift, and go to state 292
+
+
+State 229
+
+   35 elemento_registro: IDENTIFICADOR . ASIG objeto_complejo
+
+    ASIG  shift, and go to state 293
+
+
+State 230
+
+   40 lista_elemento_registro: elemento_registro .
+
+    $default  reduce using rule 40 (lista_elemento_registro)
+
+
+State 231
+
+   32 objeto_complejo: '(' lista_elemento_registro . ')'
+   41 lista_elemento_registro: lista_elemento_registro . ',' elemento_registro
+
+    ','  shift, and go to state 294
+    ')'  shift, and go to state 295
+
+
+State 232
+
+  122 instruccion_case: CASE expresion IS . lista_caso_when FINISH CASE ';'
+
+    WHEN  shift, and go to state 296
+
+    caso_when        go to state 297
+    lista_caso_when  go to state 298
+
+
+State 233
+
+  119 instruccion_exit: EXIT IDENTIFICADOR WHEN . expresion ';'
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 299
+
+
+State 234
+
+  117 instruccion_exit: EXIT IDENTIFICADOR ';' .
+
+    $default  reduce using rule 117 (instruccion_exit)
+
+
+State 235
+
+  118 instruccion_exit: EXIT WHEN expresion . ';'
+
+    ';'  shift, and go to state 300
+
+
+State 236
+
+  136 clausula_iteracion: FOREACH IDENTIFICADOR IN . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 301
+
+
+State 237
+
+  134 clausula_iteracion: FOR IDENTIFICADOR IN . expresion DOS_PTOS expresion
+  135                   | FOR IDENTIFICADOR IN . REVERSE expresion DOS_PTOS expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    REVERSE    shift, and go to state 302
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 303
+
+
+State 238
+
+  133 instruccion_loop: IDENTIFICADOR ':' clausula_iteracion . bucle_base ';'
+
+    LOOP  shift, and go to state 179
+
+    bucle_base  go to state 304
+
+
+State 239
+
+  149 llamada_suprograma: IDENTIFICADOR '(' ')' .
+
+    $default  reduce using rule 149 (llamada_suprograma)
+
+
+State 240
+
+   20 lista_expresion: lista_expresion . ',' expresion
+  150 llamada_suprograma: IDENTIFICADOR '(' lista_expresion . ')'
+
+    ','  shift, and go to state 223
+    ')'  shift, and go to state 305
+
+
+State 241
+
+  120 instruccion_if: IF expresion THEN . lista_instruccion FINISH IF ';'
+  121               | IF expresion THEN . lista_instruccion ELSE lista_instruccion FINISH IF ';'
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 306
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 242
+
+  139 instruccion_rise: RAISE IDENTIFICADOR ';' .
+
+    $default  reduce using rule 139 (instruccion_rise)
+
+
+State 243
+
+  115 instruccion_return: RETURN expresion ';' .
+
+    $default  reduce using rule 115 (instruccion_return)
+
+
+State 244
+
+  147 clausula_defecto: DEFAULT . '(' IDENTIFICADOR ')' lista_instruccion
+
+    '('  shift, and go to state 307
+
+
+State 245
+
+  144 clausula_especifica: EXCEPTION . '(' IDENTIFICADOR ')' lista_instruccion
+
+    '('  shift, and go to state 308
+
+
+State 246
+
+  140 instruccion_try_catch: TRY lista_instruccion clausulas_excepcion . FINISH TRY
+
+    FINISH  shift, and go to state 309
+
+
+State 247
+
+  145 lista_clausula_especifica: clausula_especifica .
+
+    $default  reduce using rule 145 (lista_clausula_especifica)
+
+
+State 248
+
+  142 clausulas_excepcion: lista_clausula_especifica . clausula_defecto
+  143                    | lista_clausula_especifica .
+  146 lista_clausula_especifica: lista_clausula_especifica . clausula_especifica
+
+    DEFAULT    shift, and go to state 244
+    EXCEPTION  shift, and go to state 245
+
+    $default  reduce using rule 143 (clausulas_excepcion)
+
+    clausula_especifica  go to state 310
+    clausula_defecto     go to state 311
+
+
+State 249
+
+  141 clausulas_excepcion: clausula_defecto .
+
+    $default  reduce using rule 141 (clausulas_excepcion)
+
+
+State 250
+
+   96 cuerpo_subprograma: IS START lista_instruccion FINISH IDENTIFICADOR .
+
+    $default  reduce using rule 96 (cuerpo_subprograma)
+
+
+State 251
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  138 bucle_base: LOOP lista_instruccion . FINISH LOOP
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FINISH         shift, and go to state 312
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 252
+
+  132 instruccion_loop: clausula_iteracion bucle_base ';' .
+
+    $default  reduce using rule 132 (instruccion_loop)
+
+
+State 253
+
+  114 instruccion_asignacion: nombre ASIG expresion . ';'
+
+    ';'  shift, and go to state 313
+
+
+State 254
+
+  162 componente_indexado: nombre '[' expresion . ']'
+
+    ']'  shift, and go to state 314
+
+
+State 255
+
+  163 componente_hash: nombre '{' expresion . '}'
+
+    '}'  shift, and go to state 315
+
+
+State 256
+
+  149 llamada_suprograma: IDENTIFICADOR . '(' ')'
+  150                   | IDENTIFICADOR . '(' lista_expresion ')'
+  164 componente_compuesto: nombre '.' IDENTIFICADOR .
+
+    '('  shift, and go to state 170
+
+    $default  reduce using rule 164 (componente_compuesto)
+
+
+State 257
+
+  165 componente_compuesto: nombre '.' llamada_suprograma .
+
+    $default  reduce using rule 165 (componente_compuesto)
+
+
+State 258
+
+   97 cuerpo_subprograma: IS lista_declaracion START lista_instruccion FINISH .
+   98                   | IS lista_declaracion START lista_instruccion FINISH . IDENTIFICADOR
+
+    IDENTIFICADOR  shift, and go to state 316
+
+    $default  reduce using rule 97 (cuerpo_subprograma)
+
+
+State 259
+
+   94 modo: IN OUT .
+
+    $default  reduce using rule 94 (modo)
+
+
+State 260
+
+   92 declaracion_parametro: lista_identificadores ':' modo especificacion_tipo .
+
+    $default  reduce using rule 92 (declaracion_parametro)
+
+
+State 261
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal ')' $@1 RETURN . especificacion_tipo
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 317
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 262
+
+   90 lista_declaracion_parametro: declaracion_parametro ';' lista_declaracion_parametro .
+
+    $default  reduce using rule 90 (lista_declaracion_parametro)
+
+
+State 263
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  169                 | expresion_logica AND expresion_logica .
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 169 (expresion_logica)
+
+
+State 264
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  175                 | expresion_logica DISTINTO expresion_logica .
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 175 (expresion_logica)
+
+
+State 265
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+  184                 | expresion_logica EXP expresion_logica .
+
+    AND          shift, and go to state 194
+    DISTINTO     shift, and go to state 195
+    EXP          shift, and go to state 196
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    MOD          shift, and go to state 200
+    OR           shift, and go to state 201
+    '@'          shift, and go to state 202
+    '&'          shift, and go to state 203
+    '+'          shift, and go to state 204
+    '-'          shift, and go to state 205
+    '*'          shift, and go to state 206
+    '%'          shift, and go to state 207
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 184 (expresion_logica)
+
+
+State 266
+
+  187 expresion: expresion_logica IF expresion . ELSE expresion
+
+    ELSE  shift, and go to state 318
+
+
+State 267
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  171                 | expresion_logica MAYOR_IGUAL expresion_logica .
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 171 (expresion_logica)
+
+
+State 268
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  172                 | expresion_logica MENOR_IGUAL expresion_logica .
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 172 (expresion_logica)
+
+
+State 269
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  181                 | expresion_logica MOD expresion_logica .
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 181 (expresion_logica)
+
+
+State 270
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  168                 | expresion_logica OR expresion_logica .
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 168 (expresion_logica)
+
+
+State 271
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  177                 | expresion_logica '@' expresion_logica .
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 177 (expresion_logica)
+
+
+State 272
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  178                 | expresion_logica '&' expresion_logica .
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 178 (expresion_logica)
+
+
+State 273
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  179                 | expresion_logica '+' expresion_logica .
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 179 (expresion_logica)
+
+
+State 274
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  180                 | expresion_logica '-' expresion_logica .
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 180 (expresion_logica)
+
+
+State 275
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  183                 | expresion_logica '*' expresion_logica .
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 183 (expresion_logica)
+
+
+State 276
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  182                 | expresion_logica '%' expresion_logica .
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     shift, and go to state 195
+    MAYOR_IGUAL  shift, and go to state 198
+    MENOR_IGUAL  shift, and go to state 199
+    '='          shift, and go to state 208
+    '<'          shift, and go to state 209
+    '>'          shift, and go to state 210
+
+    $default  reduce using rule 182 (expresion_logica)
+
+
+State 277
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  176                 | expresion_logica '=' expresion_logica .
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 176 (expresion_logica)
+
+
+State 278
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  174                 | expresion_logica . '<' expresion_logica
+  174                 | expresion_logica '<' expresion_logica .
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 174 (expresion_logica)
+
+
+State 279
+
+  168 expresion_logica: expresion_logica . OR expresion_logica
+  169                 | expresion_logica . AND expresion_logica
+  171                 | expresion_logica . MAYOR_IGUAL expresion_logica
+  172                 | expresion_logica . MENOR_IGUAL expresion_logica
+  173                 | expresion_logica . '>' expresion_logica
+  173                 | expresion_logica '>' expresion_logica .
+  174                 | expresion_logica . '<' expresion_logica
+  175                 | expresion_logica . DISTINTO expresion_logica
+  176                 | expresion_logica . '=' expresion_logica
+  177                 | expresion_logica . '@' expresion_logica
+  178                 | expresion_logica . '&' expresion_logica
+  179                 | expresion_logica . '+' expresion_logica
+  180                 | expresion_logica . '-' expresion_logica
+  181                 | expresion_logica . MOD expresion_logica
+  182                 | expresion_logica . '%' expresion_logica
+  183                 | expresion_logica . '*' expresion_logica
+  184                 | expresion_logica . EXP expresion_logica
+
+    DISTINTO     error (nonassociative)
+    MAYOR_IGUAL  error (nonassociative)
+    MENOR_IGUAL  error (nonassociative)
+    '='          error (nonassociative)
+    '<'          error (nonassociative)
+    '>'          error (nonassociative)
+
+    $default  reduce using rule 173 (expresion_logica)
+
+
+State 280
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS expresion . ')' OF especificacion_tipo
+
+    ')'  shift, and go to state 319
+
+
+State 281
+
+   53 tipo_clase: CLASS '(' nombre_de_tipo ')' lista_componente_clase . FINISH CLASS
+   55 lista_componente_clase: lista_componente_clase . componente_clase
+
+    ABSTRACT       shift, and go to state 58
+    CONSTRUCTOR    shift, and go to state 59
+    DESTRUCTOR     shift, and go to state 60
+    ESPECIFIC      shift, and go to state 61
+    FINAL          shift, and go to state 62
+    FINISH         shift, and go to state 320
+    FUNCTION       shift, and go to state 1
+    IDENTIFICADOR  shift, and go to state 2
+    PROCEDURE      shift, and go to state 3
+    PRIVATE        shift, and go to state 63
+    PROTECTED      shift, and go to state 64
+    PUBLIC         shift, and go to state 65
+    TYPE           shift, and go to state 4
+
+    declaracion_objeto          go to state 67
+    lista_identificadores       go to state 7
+    declaracion_tipo            go to state 68
+    componente_clase            go to state 135
+    declaracion_componente      go to state 71
+    visibilidad                 go to state 72
+    declaracion_metodo          go to state 73
+    modificador                 go to state 74
+    lista_modificador           go to state 75
+    declaracion_subprograma     go to state 76
+    especificacion_subprograma  go to state 10
+
+
+State 282
+
+   75 elemento: IDENTIFICADOR FLECHA . literal
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+
+    literal  go to state 321
+
+
+State 283
+
+   73 tipo_enumeracion: ENUMERATION OF tipo_escalar lista_elemento FINISH . ENUMERATION
+
+    ENUMERATION  shift, and go to state 322
+
+
+State 284
+
+   77 lista_elemento: lista_elemento ',' . elemento
+
+    CTC_CADENA     shift, and go to state 151
+    CTC_CARACTER   shift, and go to state 152
+    CTC_FLOAT      shift, and go to state 153
+    CTC_INT        shift, and go to state 154
+    FALSE          shift, and go to state 155
+    IDENTIFICADOR  shift, and go to state 216
+    TRUE           shift, and go to state 156
+
+    elemento  go to state 323
+    literal   go to state 219
+
+
+State 285
+
+   51 tipo_hashtable: HASHTABLE OF '<' especificacion_tipo ',' . especificacion_tipo '>'
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 324
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 286
+
+   50 componente: lista_identificadores ':' especificacion_tipo ';' .
+
+    $default  reduce using rule 50 (componente)
+
+
+State 287
+
+   20 lista_expresion: lista_expresion ',' expresion .
+
+    $default  reduce using rule 20 (lista_expresion)
+
+
+State 288
+
+   37 lista_objeto_complejo: lista_objeto_complejo ',' . objeto_complejo
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo  go to state 325
+    literal          go to state 161
+
+
+State 289
+
+   30 objeto_complejo: '[' lista_objeto_complejo ']' .
+
+    $default  reduce using rule 30 (objeto_complejo)
+
+
+State 290
+
+   34 elemento_hastable: objeto_complejo FLECHA . objeto_complejo
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo  go to state 326
+    literal          go to state 161
+
+
+State 291
+
+   39 lista_elemento_hastable: lista_elemento_hastable ',' . elemento_hastable
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo    go to state 226
+    elemento_hastable  go to state 327
+    literal            go to state 161
+
+
+State 292
+
+   31 objeto_complejo: '{' lista_elemento_hastable '}' .
+
+    $default  reduce using rule 31 (objeto_complejo)
+
+
+State 293
+
+   35 elemento_registro: IDENTIFICADOR ASIG . objeto_complejo
+
+    CTC_CADENA    shift, and go to state 151
+    CTC_CARACTER  shift, and go to state 152
+    CTC_FLOAT     shift, and go to state 153
+    CTC_INT       shift, and go to state 154
+    FALSE         shift, and go to state 155
+    TRUE          shift, and go to state 156
+    '['           shift, and go to state 157
+    '{'           shift, and go to state 158
+    '('           shift, and go to state 159
+
+    objeto_complejo  go to state 328
+    literal          go to state 161
+
+
+State 294
+
+   41 lista_elemento_registro: lista_elemento_registro ',' . elemento_registro
+
+    IDENTIFICADOR  shift, and go to state 229
+
+    elemento_registro  go to state 329
+
+
+State 295
+
+   32 objeto_complejo: '(' lista_elemento_registro ')' .
+
+    $default  reduce using rule 32 (objeto_complejo)
+
+
+State 296
+
+  123 caso_when: WHEN . entrada FLECHA lista_instruccion
+  124          | WHEN . entrada lista_entrada FLECHA lista_instruccion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    OTHERS     shift, and go to state 330
+    '-'        shift, and go to state 130
+
+    entrada           go to state 331
+    expresion_logica  go to state 131
+    expresion         go to state 332
+
+
+State 297
+
+  125 lista_caso_when: caso_when .
+
+    $default  reduce using rule 125 (lista_caso_when)
+
+
+State 298
+
+  122 instruccion_case: CASE expresion IS lista_caso_when . FINISH CASE ';'
+  126 lista_caso_when: lista_caso_when . caso_when
+
+    FINISH  shift, and go to state 333
+    WHEN    shift, and go to state 296
+
+    caso_when  go to state 334
+
+
+State 299
+
+  119 instruccion_exit: EXIT IDENTIFICADOR WHEN expresion . ';'
+
+    ';'  shift, and go to state 335
+
+
+State 300
+
+  118 instruccion_exit: EXIT WHEN expresion ';' .
+
+    $default  reduce using rule 118 (instruccion_exit)
+
+
+State 301
+
+  136 clausula_iteracion: FOREACH IDENTIFICADOR IN expresion .
+
+    $default  reduce using rule 136 (clausula_iteracion)
+
+
+State 302
+
+  135 clausula_iteracion: FOR IDENTIFICADOR IN REVERSE . expresion DOS_PTOS expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 336
+
+
+State 303
+
+  134 clausula_iteracion: FOR IDENTIFICADOR IN expresion . DOS_PTOS expresion
+
+    DOS_PTOS  shift, and go to state 337
+
+
+State 304
+
+  133 instruccion_loop: IDENTIFICADOR ':' clausula_iteracion bucle_base . ';'
+
+    ';'  shift, and go to state 338
+
+
+State 305
+
+  150 llamada_suprograma: IDENTIFICADOR '(' lista_expresion ')' .
+
+    $default  reduce using rule 150 (llamada_suprograma)
+
+
+State 306
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  120 instruccion_if: IF expresion THEN lista_instruccion . FINISH IF ';'
+  121               | IF expresion THEN lista_instruccion . ELSE lista_instruccion FINISH IF ';'
+
+    CASE           shift, and go to state 90
+    ELSE           shift, and go to state 339
+    EXIT           shift, and go to state 91
+    FINISH         shift, and go to state 340
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 307
+
+  147 clausula_defecto: DEFAULT '(' . IDENTIFICADOR ')' lista_instruccion
+
+    IDENTIFICADOR  shift, and go to state 341
+
+
+State 308
+
+  144 clausula_especifica: EXCEPTION '(' . IDENTIFICADOR ')' lista_instruccion
+
+    IDENTIFICADOR  shift, and go to state 342
+
+
+State 309
+
+  140 instruccion_try_catch: TRY lista_instruccion clausulas_excepcion FINISH . TRY
+
+    TRY  shift, and go to state 343
+
+
+State 310
+
+  146 lista_clausula_especifica: lista_clausula_especifica clausula_especifica .
+
+    $default  reduce using rule 146 (lista_clausula_especifica)
+
+
+State 311
+
+  142 clausulas_excepcion: lista_clausula_especifica clausula_defecto .
+
+    $default  reduce using rule 142 (clausulas_excepcion)
+
+
+State 312
+
+  138 bucle_base: LOOP lista_instruccion FINISH . LOOP
+
+    LOOP  shift, and go to state 344
+
+
+State 313
+
+  114 instruccion_asignacion: nombre ASIG expresion ';' .
+
+    $default  reduce using rule 114 (instruccion_asignacion)
+
+
+State 314
+
+  162 componente_indexado: nombre '[' expresion ']' .
+
+    $default  reduce using rule 162 (componente_indexado)
+
+
+State 315
+
+  163 componente_hash: nombre '{' expresion '}' .
+
+    $default  reduce using rule 163 (componente_hash)
+
+
+State 316
+
+   98 cuerpo_subprograma: IS lista_declaracion START lista_instruccion FINISH IDENTIFICADOR .
+
+    $default  reduce using rule 98 (cuerpo_subprograma)
+
+
+State 317
+
+   84 especificacion_subprograma: FUNCTION IDENTIFICADOR '(' parte_formal ')' $@1 RETURN especificacion_tipo .
+
+    $default  reduce using rule 84 (especificacion_subprograma)
+
+
+State 318
+
+  187 expresion: expresion_logica IF expresion ELSE . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 345
+
+
+State 319
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS expresion ')' . OF especificacion_tipo
+
+    OF  shift, and go to state 346
+
+
+State 320
+
+   53 tipo_clase: CLASS '(' nombre_de_tipo ')' lista_componente_clase FINISH . CLASS
+
+    CLASS  shift, and go to state 347
+
+
+State 321
+
+   75 elemento: IDENTIFICADOR FLECHA literal .
+
+    $default  reduce using rule 75 (elemento)
+
+
+State 322
+
+   73 tipo_enumeracion: ENUMERATION OF tipo_escalar lista_elemento FINISH ENUMERATION .
+
+    $default  reduce using rule 73 (tipo_enumeracion)
+
+
+State 323
+
+   77 lista_elemento: lista_elemento ',' elemento .
+
+    $default  reduce using rule 77 (lista_elemento)
+
+
+State 324
+
+   51 tipo_hashtable: HASHTABLE OF '<' especificacion_tipo ',' especificacion_tipo . '>'
+
+    '>'  shift, and go to state 348
+
+
+State 325
+
+   37 lista_objeto_complejo: lista_objeto_complejo ',' objeto_complejo .
+
+    $default  reduce using rule 37 (lista_objeto_complejo)
+
+
+State 326
+
+   34 elemento_hastable: objeto_complejo FLECHA objeto_complejo .
+
+    $default  reduce using rule 34 (elemento_hastable)
+
+
+State 327
+
+   39 lista_elemento_hastable: lista_elemento_hastable ',' elemento_hastable .
+
+    $default  reduce using rule 39 (lista_elemento_hastable)
+
+
+State 328
+
+   35 elemento_registro: IDENTIFICADOR ASIG objeto_complejo .
+
+    $default  reduce using rule 35 (elemento_registro)
+
+
+State 329
+
+   41 lista_elemento_registro: lista_elemento_registro ',' elemento_registro .
+
+    $default  reduce using rule 41 (lista_elemento_registro)
+
+
+State 330
+
+  129 entrada: OTHERS .
+
+    $default  reduce using rule 129 (entrada)
+
+
+State 331
+
+  123 caso_when: WHEN entrada . FLECHA lista_instruccion
+  124          | WHEN entrada . lista_entrada FLECHA lista_instruccion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    FLECHA     shift, and go to state 349
+    NOT        shift, and go to state 129
+    OTHERS     shift, and go to state 330
+    '-'        shift, and go to state 130
+
+    entrada           go to state 350
+    lista_entrada     go to state 351
+    expresion_logica  go to state 131
+    expresion         go to state 332
+
+
+State 332
+
+  127 entrada: expresion .
+  128        | expresion . DOS_PTOS expresion
+
+    DOS_PTOS  shift, and go to state 352
+
+    $default  reduce using rule 127 (entrada)
+
+
+State 333
+
+  122 instruccion_case: CASE expresion IS lista_caso_when FINISH . CASE ';'
+
+    CASE  shift, and go to state 353
+
+
+State 334
+
+  126 lista_caso_when: lista_caso_when caso_when .
+
+    $default  reduce using rule 126 (lista_caso_when)
+
+
+State 335
+
+  119 instruccion_exit: EXIT IDENTIFICADOR WHEN expresion ';' .
+
+    $default  reduce using rule 119 (instruccion_exit)
+
+
+State 336
+
+  135 clausula_iteracion: FOR IDENTIFICADOR IN REVERSE expresion . DOS_PTOS expresion
+
+    DOS_PTOS  shift, and go to state 354
+
+
+State 337
+
+  134 clausula_iteracion: FOR IDENTIFICADOR IN expresion DOS_PTOS . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 355
+
+
+State 338
+
+  133 instruccion_loop: IDENTIFICADOR ':' clausula_iteracion bucle_base ';' .
+
+    $default  reduce using rule 133 (instruccion_loop)
+
+
+State 339
+
+  121 instruccion_if: IF expresion THEN lista_instruccion ELSE . lista_instruccion FINISH IF ';'
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 356
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 340
+
+  120 instruccion_if: IF expresion THEN lista_instruccion FINISH . IF ';'
+
+    IF  shift, and go to state 357
+
+
+State 341
+
+  147 clausula_defecto: DEFAULT '(' IDENTIFICADOR . ')' lista_instruccion
+
+    ')'  shift, and go to state 358
+
+
+State 342
+
+  144 clausula_especifica: EXCEPTION '(' IDENTIFICADOR . ')' lista_instruccion
+
+    ')'  shift, and go to state 359
+
+
+State 343
+
+  140 instruccion_try_catch: TRY lista_instruccion clausulas_excepcion FINISH TRY .
+
+    $default  reduce using rule 140 (instruccion_try_catch)
+
+
+State 344
+
+  138 bucle_base: LOOP lista_instruccion FINISH LOOP .
+
+    $default  reduce using rule 138 (bucle_base)
+
+
+State 345
+
+  187 expresion: expresion_logica IF expresion ELSE expresion .
+
+    $default  reduce using rule 187 (expresion)
+
+
+State 346
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS expresion ')' OF . especificacion_tipo
+
+    ARRAY          shift, and go to state 23
+    BOOLEAN        shift, and go to state 24
+    CLASS          shift, and go to state 25
+    CHARACTER      shift, and go to state 26
+    ENUMERATION    shift, and go to state 28
+    FLOAT          shift, and go to state 29
+    HASHTABLE      shift, and go to state 30
+    IDENTIFICADOR  shift, and go to state 31
+    INTEGER        shift, and go to state 32
+    RECORD         shift, and go to state 33
+
+    tipo_escalar         go to state 53
+    nombre_de_tipo       go to state 54
+    tipo_compuesto       go to state 55
+    especificacion_tipo  go to state 360
+    tipo_tablero         go to state 38
+    tipo_registro        go to state 39
+    tipo_hashtable       go to state 40
+    tipo_clase           go to state 41
+    tipo_enumeracion     go to state 42
+
+
+State 347
+
+   53 tipo_clase: CLASS '(' nombre_de_tipo ')' lista_componente_clase FINISH CLASS .
+
+    $default  reduce using rule 53 (tipo_clase)
+
+
+State 348
+
+   51 tipo_hashtable: HASHTABLE OF '<' especificacion_tipo ',' especificacion_tipo '>' .
+
+    $default  reduce using rule 51 (tipo_hashtable)
+
+
+State 349
+
+  123 caso_when: WHEN entrada FLECHA . lista_instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 361
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 350
+
+  130 lista_entrada: entrada .
+  131              | entrada . '|' lista_entrada
+
+    '|'  shift, and go to state 362
+
+    $default  reduce using rule 130 (lista_entrada)
+
+
+State 351
+
+  124 caso_when: WHEN entrada lista_entrada . FLECHA lista_instruccion
+
+    FLECHA  shift, and go to state 363
+
+
+State 352
+
+  128 entrada: expresion DOS_PTOS . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 364
+
+
+State 353
+
+  122 instruccion_case: CASE expresion IS lista_caso_when FINISH CASE . ';'
+
+    ';'  shift, and go to state 365
+
+
+State 354
+
+  135 clausula_iteracion: FOR IDENTIFICADOR IN REVERSE expresion DOS_PTOS . expresion
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    '-'        shift, and go to state 130
+
+    expresion_logica  go to state 131
+    expresion         go to state 366
+
+
+State 355
+
+  134 clausula_iteracion: FOR IDENTIFICADOR IN expresion DOS_PTOS expresion .
+
+    $default  reduce using rule 134 (clausula_iteracion)
+
+
+State 356
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  121 instruccion_if: IF expresion THEN lista_instruccion ELSE lista_instruccion . FINISH IF ';'
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FINISH         shift, and go to state 367
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 357
+
+  120 instruccion_if: IF expresion THEN lista_instruccion FINISH IF . ';'
+
+    ';'  shift, and go to state 368
+
+
+State 358
+
+  147 clausula_defecto: DEFAULT '(' IDENTIFICADOR ')' . lista_instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 369
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 359
+
+  144 clausula_especifica: EXCEPTION '(' IDENTIFICADOR ')' . lista_instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 370
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 360
+
+   46 tipo_tablero: ARRAY '(' expresion DOS_PTOS expresion ')' OF especificacion_tipo .
+
+    $default  reduce using rule 46 (tipo_tablero)
+
+
+State 361
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  123 caso_when: WHEN entrada FLECHA lista_instruccion .
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    $default  reduce using rule 123 (caso_when)
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 362
+
+  131 lista_entrada: entrada '|' . lista_entrada
+
+    CTC_FLOAT  shift, and go to state 127
+    CTC_INT    shift, and go to state 128
+    NOT        shift, and go to state 129
+    OTHERS     shift, and go to state 330
+    '-'        shift, and go to state 130
+
+    entrada           go to state 350
+    lista_entrada     go to state 371
+    expresion_logica  go to state 131
+    expresion         go to state 332
+
+
+State 363
+
+  124 caso_when: WHEN entrada lista_entrada FLECHA . lista_instruccion
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    lista_instruccion       go to state 372
+    instruccion             go to state 102
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 364
+
+  128 entrada: expresion DOS_PTOS expresion .
+
+    $default  reduce using rule 128 (entrada)
+
+
+State 365
+
+  122 instruccion_case: CASE expresion IS lista_caso_when FINISH CASE ';' .
+
+    $default  reduce using rule 122 (instruccion_case)
+
+
+State 366
+
+  135 clausula_iteracion: FOR IDENTIFICADOR IN REVERSE expresion DOS_PTOS expresion .
+
+    $default  reduce using rule 135 (clausula_iteracion)
+
+
+State 367
+
+  121 instruccion_if: IF expresion THEN lista_instruccion ELSE lista_instruccion FINISH . IF ';'
+
+    IF  shift, and go to state 373
+
+
+State 368
+
+  120 instruccion_if: IF expresion THEN lista_instruccion FINISH IF ';' .
+
+    $default  reduce using rule 120 (instruccion_if)
+
+
+State 369
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  147 clausula_defecto: DEFAULT '(' IDENTIFICADOR ')' lista_instruccion .
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    $default  reduce using rule 147 (clausula_defecto)
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 370
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  144 clausula_especifica: EXCEPTION '(' IDENTIFICADOR ')' lista_instruccion .
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    $default  reduce using rule 144 (clausula_especifica)
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 371
+
+  131 lista_entrada: entrada '|' lista_entrada .
+
+    $default  reduce using rule 131 (lista_entrada)
+
+
+State 372
+
+  100 lista_instruccion: lista_instruccion . instruccion
+  124 caso_when: WHEN entrada lista_entrada FLECHA lista_instruccion .
+
+    CASE           shift, and go to state 90
+    EXIT           shift, and go to state 91
+    FOREACH        shift, and go to state 92
+    FOR            shift, and go to state 93
+    IDENTIFICADOR  shift, and go to state 94
+    IF             shift, and go to state 95
+    NIL            shift, and go to state 96
+    RAISE          shift, and go to state 97
+    RETURN         shift, and go to state 98
+    TRY            shift, and go to state 99
+    WHILE          shift, and go to state 100
+
+    $default  reduce using rule 124 (caso_when)
+
+    instruccion             go to state 178
+    instruccion_vacia       go to state 103
+    instruccion_asignacion  go to state 104
+    instruccion_return      go to state 105
+    instruccion_exit        go to state 106
+    instruccion_if          go to state 107
+    instruccion_case        go to state 108
+    instruccion_loop        go to state 109
+    clausula_iteracion      go to state 110
+    instruccion_rise        go to state 111
+    instruccion_try_catch   go to state 112
+    llamada_procedure       go to state 113
+    llamada_suprograma      go to state 114
+    nombre                  go to state 115
+    componente_indexado     go to state 116
+    componente_hash         go to state 117
+    componente_compuesto    go to state 118
+
+
+State 373
+
+  121 instruccion_if: IF expresion THEN lista_instruccion ELSE lista_instruccion FINISH IF . ';'
+
+    ';'  shift, and go to state 374
+
+
+State 374
+
+  121 instruccion_if: IF expresion THEN lista_instruccion ELSE lista_instruccion FINISH IF ';' .
+
+    $default  reduce using rule 121 (instruccion_if)

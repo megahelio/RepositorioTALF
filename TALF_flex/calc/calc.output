@@ -1,0 +1,287 @@
+Gramática
+
+    0 $accept: lineas $end
+
+    1 lineas: %empty
+    2       | lineas linea
+
+    3 linea: '\n'
+    4      | IDENTIFICADOR '=' expresion '\n'
+    5      | expresion '\n'
+    6      | error '\n'
+
+    7 expresion: CONSTANTE_REAL
+    8          | CONSTANTE_ENTERA
+    9          | IDENTIFICADOR
+   10          | expresion '+' expresion
+   11          | expresion '-' expresion
+   12          | expresion '*' expresion
+   13          | expresion '/' expresion
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+'\n' (10) 3 4 5 6
+'*' (42) 12
+'+' (43) 10
+'-' (45) 11
+'/' (47) 13
+'=' (61) 4
+error (256) 6
+CONSTANTE_REAL (258) 7
+CONSTANTE_ENTERA (259) 8
+IDENTIFICADOR (260) 4 9
+
+
+No terminales con las reglas donde aparecen
+
+$accept (12)
+    en la izquierda: 0
+lineas (13)
+    en la izquierda: 1 2, en la derecha: 0 2
+linea (14)
+    en la izquierda: 3 4 5 6, en la derecha: 2
+expresion (15)
+    en la izquierda: 7 8 9 10 11 12 13, en la derecha: 4 5 10 11 12
+    13
+
+
+Estado 0
+
+    0 $accept: . lineas $end
+
+    $default  reduce usando la regla 1 (lineas)
+
+    lineas  ir al estado 1
+
+
+Estado 1
+
+    0 $accept: lineas . $end
+    2 lineas: lineas . linea
+
+    $end              desplazar e ir al estado 2
+    error             desplazar e ir al estado 3
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 6
+    '\n'              desplazar e ir al estado 7
+
+    linea      ir al estado 8
+    expresion  ir al estado 9
+
+
+Estado 2
+
+    0 $accept: lineas $end .
+
+    $default  aceptar
+
+
+Estado 3
+
+    6 linea: error . '\n'
+
+    '\n'  desplazar e ir al estado 10
+
+
+Estado 4
+
+    7 expresion: CONSTANTE_REAL .
+
+    $default  reduce usando la regla 7 (expresion)
+
+
+Estado 5
+
+    8 expresion: CONSTANTE_ENTERA .
+
+    $default  reduce usando la regla 8 (expresion)
+
+
+Estado 6
+
+    4 linea: IDENTIFICADOR . '=' expresion '\n'
+    9 expresion: IDENTIFICADOR .
+
+    '='  desplazar e ir al estado 11
+
+    $default  reduce usando la regla 9 (expresion)
+
+
+Estado 7
+
+    3 linea: '\n' .
+
+    $default  reduce usando la regla 3 (linea)
+
+
+Estado 8
+
+    2 lineas: lineas linea .
+
+    $default  reduce usando la regla 2 (lineas)
+
+
+Estado 9
+
+    5 linea: expresion . '\n'
+   10 expresion: expresion . '+' expresion
+   11          | expresion . '-' expresion
+   12          | expresion . '*' expresion
+   13          | expresion . '/' expresion
+
+    '-'   desplazar e ir al estado 12
+    '+'   desplazar e ir al estado 13
+    '*'   desplazar e ir al estado 14
+    '/'   desplazar e ir al estado 15
+    '\n'  desplazar e ir al estado 16
+
+
+Estado 10
+
+    6 linea: error '\n' .
+
+    $default  reduce usando la regla 6 (linea)
+
+
+Estado 11
+
+    4 linea: IDENTIFICADOR '=' . expresion '\n'
+
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 17
+
+    expresion  ir al estado 18
+
+
+Estado 12
+
+   11 expresion: expresion '-' . expresion
+
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 17
+
+    expresion  ir al estado 19
+
+
+Estado 13
+
+   10 expresion: expresion '+' . expresion
+
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 17
+
+    expresion  ir al estado 20
+
+
+Estado 14
+
+   12 expresion: expresion '*' . expresion
+
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 17
+
+    expresion  ir al estado 21
+
+
+Estado 15
+
+   13 expresion: expresion '/' . expresion
+
+    CONSTANTE_REAL    desplazar e ir al estado 4
+    CONSTANTE_ENTERA  desplazar e ir al estado 5
+    IDENTIFICADOR     desplazar e ir al estado 17
+
+    expresion  ir al estado 22
+
+
+Estado 16
+
+    5 linea: expresion '\n' .
+
+    $default  reduce usando la regla 5 (linea)
+
+
+Estado 17
+
+    9 expresion: IDENTIFICADOR .
+
+    $default  reduce usando la regla 9 (expresion)
+
+
+Estado 18
+
+    4 linea: IDENTIFICADOR '=' expresion . '\n'
+   10 expresion: expresion . '+' expresion
+   11          | expresion . '-' expresion
+   12          | expresion . '*' expresion
+   13          | expresion . '/' expresion
+
+    '-'   desplazar e ir al estado 12
+    '+'   desplazar e ir al estado 13
+    '*'   desplazar e ir al estado 14
+    '/'   desplazar e ir al estado 15
+    '\n'  desplazar e ir al estado 23
+
+
+Estado 19
+
+   10 expresion: expresion . '+' expresion
+   11          | expresion . '-' expresion
+   11          | expresion '-' expresion .
+   12          | expresion . '*' expresion
+   13          | expresion . '/' expresion
+
+    '*'  desplazar e ir al estado 14
+    '/'  desplazar e ir al estado 15
+
+    $default  reduce usando la regla 11 (expresion)
+
+
+Estado 20
+
+   10 expresion: expresion . '+' expresion
+   10          | expresion '+' expresion .
+   11          | expresion . '-' expresion
+   12          | expresion . '*' expresion
+   13          | expresion . '/' expresion
+
+    '*'  desplazar e ir al estado 14
+    '/'  desplazar e ir al estado 15
+
+    $default  reduce usando la regla 10 (expresion)
+
+
+Estado 21
+
+   10 expresion: expresion . '+' expresion
+   11          | expresion . '-' expresion
+   12          | expresion . '*' expresion
+   12          | expresion '*' expresion .
+   13          | expresion . '/' expresion
+
+    $default  reduce usando la regla 12 (expresion)
+
+
+Estado 22
+
+   10 expresion: expresion . '+' expresion
+   11          | expresion . '-' expresion
+   12          | expresion . '*' expresion
+   13          | expresion . '/' expresion
+   13          | expresion '/' expresion .
+
+    $default  reduce usando la regla 13 (expresion)
+
+
+Estado 23
+
+    4 linea: IDENTIFICADOR '=' expresion '\n' .
+
+    $default  reduce usando la regla 4 (linea)

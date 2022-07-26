@@ -1,0 +1,12 @@
+Flex AKA Free Lex
+
+[ER 1] [acción 1]  Esto es una regla
+....
+[ER n] [acción n]
+
+Si n ERs comparten la misma acción se indica con | en las n-1 primeras
+[ER 1] |
+...
+[ER n] [acción común]
+
+exre
